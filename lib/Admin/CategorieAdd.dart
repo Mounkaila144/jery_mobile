@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jery/Admin/AddOneCategories.dart';
@@ -64,8 +65,6 @@ class _CategoriesAddState extends State<CategoriesAdd> {
           ),
         ],
       ),
-      drawer: const Sidebar(),
-
       body: FutureBuilder <List<Categories>?>(
           future: categories,
           builder: (context,snap){
@@ -115,10 +114,19 @@ class _CategoriesAddState extends State<CategoriesAdd> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    "http://${url}/${data[index].image}",
-                                    // width: 120,height: 120,
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        Center(child: LoadingJumpingLine.circle(
+                                          borderColor: Colors.black,
+                                          borderSize: 3.0,
+                                          backgroundColor: Colors.white,
+                                          duration: Duration(milliseconds: 500),
+                                        ),
+                                        ),
+                                    imageUrl: "http://${url}/${data[index].image}",
                                   ),
+
                                 ),
                                 SizedBox(height: 2),
                                 Text(

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -161,9 +162,17 @@ class _ProductsAddState extends State<ProductsAdd> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
-                                child: Image.network(
-                                  "http://${url}/${data[index].image}",
-                                  // width: 120,height: 120,
+                                child:  CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                      Center(child: LoadingJumpingLine.circle(
+                                        borderColor: Colors.black,
+                                        borderSize: 3.0,
+                                        backgroundColor: Colors.white,
+                                        duration: Duration(milliseconds: 500),
+                                      ),
+                                      ),
+                                  imageUrl: "http://${url}/${data[index].image}",
                                 ),
                               ),
                               SizedBox(height: 2),
@@ -171,6 +180,14 @@ class _ProductsAddState extends State<ProductsAdd> {
                                 data[index].name,
                                 style: const TextStyle(
                                   color: Colors.white,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                data[index].price,
+                                style: const TextStyle(
+                                  color: Colors.orange,
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                 ),

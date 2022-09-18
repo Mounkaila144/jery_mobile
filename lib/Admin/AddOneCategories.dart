@@ -104,6 +104,10 @@ class AddOneCategoriesState extends State<AddOneCategories> {
      final response = await dio.post('http://$link/api/categories', data: formData);
      var statut = response.statusCode;
      if (statut == 200) {
+       Navigator.push(
+           context,
+           MaterialPageRoute(
+               builder: (context) =>CategoriesAdd()));
        return categorieFromJson(response.data);
      } else {
        throw Exception("eureur");
@@ -147,18 +151,12 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                   FadeAnimation(
                       1,
                       Text(
-                        "Connecter Vous",
-                        style: TextStyle(color: Colors.white, fontSize: 40),
+                        "Ajouter un Categories",
+                        style: TextStyle(color: Colors.white, fontSize: 30),
                       )),
                   SizedBox(
                     height: 10,
                   ),
-                  FadeAnimation(
-                      1.3,
-                      Text(
-                        "Bienvenu",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      )),
                 ],
               ),
             ),
@@ -190,7 +188,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                           FadeAnimation(
                               1000,
                               Text(
-                                "Entrer votre Email et votre mots de passe",
+                                "Entrer le nom et l'image ",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 25),
                               )),
@@ -309,7 +307,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                                       }
                                     },
                                     child: Text(
-                                      "Ajouter un categories",
+                                      "Ajouter",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -337,10 +335,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>CategoriesAdd()));
+
         } else if (snapshot.hasError) {
           return Text("Eror");
         }

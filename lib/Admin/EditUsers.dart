@@ -299,7 +299,7 @@ class EditUserState extends State<EditUser> {
                                       }
                                     },
                                     child: Text(
-                                      "Ajouter un categories",
+                                      "Modifier",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),

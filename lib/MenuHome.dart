@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jery/service.dart';
@@ -12,6 +13,7 @@ import 'Admin/cart_model.dart';
 import 'Crud.dart';
 import 'FadeAnimation.dart';
 import 'Login.dart';
+import 'global.dart';
 import 'home.dart';
 
 class MenuHome extends StatefulWidget {
@@ -83,10 +85,19 @@ class _MenuHomeState extends State<MenuHome> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
-                              child: Image.network(
-                                "http://${link}/${data[index].image}",
-                                // width: 120,height: 120,
+                              child:CachedNetworkImage(
+                                fit: BoxFit.cover,
+                                placeholder: (context, url) =>
+                                    Center(child: LoadingBouncingLine.circle(
+                                      borderColor: Colors.black,
+                                      borderSize: 3.0,
+                                      backgroundColor: Colors.white,
+                                      duration: Duration(milliseconds: 500),
+                                    ),
+                                    ),
+                                imageUrl: "http://${url}/${data[index].image}",
                               ),
+
                             ),
                             SizedBox(height: 2),
                             Text(

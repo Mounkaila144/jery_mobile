@@ -30,50 +30,64 @@ class Menu extends StatefulWidget {
 }
 
 class _MenuState extends State<Menu> {
+  @override
+  void initState() {
+    Provider.of<LoginVm>(context, listen: false).connecter();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const Text(
-                'Menu',
-              ),
-              backgroundColor: Colors.blue.shade900,
-              actions:[
-                InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => CartScreen()));
-          },
-            child: Padding(
-              padding:
-              const EdgeInsets.only(left: 0, right: 15, top: 8, bottom: 8),
-              child: Stack(
-                children: [
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Icon(Icons.shopping_cart_rounded,
-                          color: Colors.blue, size: 25)),
-                  Positioned(
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    child: Consumer<ProductsVM>(
-                      builder: (context, value, child) => CartCounter(
+      appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            'Menu',
+          ),
+          backgroundColor: Colors.blue.shade900,
+          actions:[
+      Consumer<LoginVm>(
+      builder: (context, value, child) => Container(
+      child: !value.admin ?
+      InkWell(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => CartScreen()));
+        },
+        child: Padding(
+          padding:
+          const EdgeInsets.only(left: 0, right: 15, top: 8, bottom: 8),
+          child: Stack(
+            children: [
+              Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Icon(Icons.shopping_cart_rounded,
+                      color: Colors.blue, size: 25)),
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Consumer<ProductsVM>(
+                  builder: (context, value, child) =>
+                      CartCounter(
                         count: value.lst.length.toString(),
                       ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+                ),
+              )
+            ],
           ),
-              ],
-            ),
-            drawer: Sidebar(),
-            body: context.watch<DrawerScreenProvider>().currentScreen,
-          );
+        ),
+      ):
+          null,
+    ),
+    ),
+    ],
+    ),
+    drawer: Sidebar(),
+    body: context.watch<DrawerScreenProvider>().
+    currentScreen
+    ,
+    );
   }
 }
 
