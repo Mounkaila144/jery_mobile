@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jery/Menu.dart';
 import 'package:jery/view/screen/productScreen.dart';
 import 'package:jery/viewModel/LogibVm.dart';
+import 'package:jery/viewModel/drawer_screen_provider.dart';
 import 'package:jery/viewModel/productsVm.dart';
 import 'package:provider/provider.dart';
 
@@ -24,7 +25,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => LoginVm(admin: false, connect: false),
         ),
-
+        ChangeNotifierProvider(
+          create: (context) => DrawerScreenProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'State Management Demo',

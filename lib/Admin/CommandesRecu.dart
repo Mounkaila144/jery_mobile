@@ -82,33 +82,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Liste des Commandes"),
-        actions: [
-          Card(
-            color: Colors.blue.shade900,
-            shape: CircleBorder(),
-            child: IconButton(
-              icon: const Icon(
-                Icons.add_circle,
-                size: 30,
-                color: Colors.orange,
-              ),
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>Login()));
-              },
-            ),
-          ),
-          SizedBox(
-            width: 10,
-          ),
-        ],
-      ),
-      body:
+    return
       Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -130,7 +104,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
                 ResponsiveGridList(
                   horizontalGridMargin: 10,
                   verticalGridMargin: 10,
-                  maxItemsPerRow: 3,
+                  maxItemsPerRow: 1,
                   minItemWidth: 160,
                   shrinkWrap: true,
                   children: List.generate(
@@ -148,7 +122,6 @@ class _CommandeRecusState extends State<CommandeRecus> {
                               mainAxisSize: MainAxisSize.max,
                               children: [
                                 SizedBox(
-                                  width: 130,
                                   child: Column(
                                     crossAxisAlignment:
                                     CrossAxisAlignment.start,
@@ -256,8 +229,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
           }
 
         ),
-      ),
-    );
+      );
   }
 }
 

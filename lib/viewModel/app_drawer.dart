@@ -30,17 +30,19 @@ class AppDrawer extends StatelessWidget {
           ),
           DrawerTile(
               title: 'Home',
-              icon: Icons.home_filled,
+              icon: Icons.menu,
               onTap: () {
                 Provider.of<DrawerScreenProvider>(context, listen: false)
-                    .changeCurrentScreen(CustomScreensEnum.homeScreen);
+                    .changeCurrentScreen(CustomScreensEnum.panier);
+                Navigator.pop(context);
               }),
           DrawerTile(
               title: 'My Account',
-              icon: Icons.account_circle,
+              icon: Icons.login,
               onTap: () {
                 Provider.of<DrawerScreenProvider>(context, listen: false)
-                    .changeCurrentScreen(CustomScreensEnum.profileScreen);
+                    .changeCurrentScreen(CustomScreensEnum.listCategorie);
+                Navigator.pop(context);
               }),
           DrawerTile(
               title: 'My Purchases', icon: Icons.history_rounded, onTap: () {}),

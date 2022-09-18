@@ -15,7 +15,7 @@ import '../FadeAnimation.dart';
 import '../global.dart';
 import '../theme.dart';
 
-enum Menu { itemOne, itemTwo, itemThree, itemFour }
+enum MenuPop { itemOne, itemTwo, itemThree, itemFour }
 // To parse this JSON data, do
 //
 //     final users = usersFromJson(jsonString);
@@ -330,8 +330,8 @@ class _ListesUsersState extends State<ListesUsers> {
 
 
 
-PopupMenuItem<Menu> Iteme(vauleIteme, IconData icon, Color color, String text) {
-  return PopupMenuItem<Menu>(
+PopupMenuItem<MenuPop> Iteme(vauleIteme, IconData icon, Color color, String text) {
+  return PopupMenuItem<MenuPop>(
     value: vauleIteme,
     child: Row(
       children: [

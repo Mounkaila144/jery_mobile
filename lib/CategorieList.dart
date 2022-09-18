@@ -37,35 +37,8 @@ class _CategoriesListState extends State<CategoriesList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Listes des categories"),
-        // actions: [
-        //   Card(
-        //     color: Colors.blue.shade900,
-        //     shape: const CircleBorder(),
-        //     child: IconButton(
-        //       icon: const Icon(
-        //         Icons.add_circle,
-        //         size: 30,
-        //         color: Colors.white,
-        //       ),
-        //       onPressed: () {
-        //         Navigator.push(
-        //             context,
-        //             MaterialPageRoute(
-        //                 builder: (context) => AddType()));
-        //       },
-        //     ),
-        //   ),
-        //   const SizedBox(
-        //     width: 10,
-        //   ),
-        // ],
-      ),
-      drawer: const Sidebar(),
-
-      body: FutureBuilder <List<Categories>?>(
+    return
+      FutureBuilder <List<Categories>?>(
           future: categories,
           builder: (context,snap){
             if(snap.hasData){
@@ -189,7 +162,6 @@ class _CategoriesListState extends State<CategoriesList> {
             ),);
           }
 
-      ),
-    );
+      );
   }
 }

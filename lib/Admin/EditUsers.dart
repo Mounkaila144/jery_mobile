@@ -132,8 +132,8 @@ class EditUserState extends State<EditUser> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
+    return
+      Container(
         width: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -319,8 +319,7 @@ class EditUserState extends State<EditUser> {
 
 
 
-      ),
-    );
+      );
   }
   FutureBuilder<User> buildFutureBuilder() {
     return FutureBuilder<User>(
