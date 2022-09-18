@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jery/Crud.dart';
-import 'package:jery/Crud.dart';
-import 'package:jery/Crud.dart';
-import 'package:jery/Crud.dart';
 import 'package:jery/ProductsList.dart';
 import 'package:jery/service.dart';
 import 'package:jery/theme.dart';
@@ -34,7 +31,7 @@ class _CategoriesListState extends State<CategoriesList> {
   }
 
   getData() async {
-    categories =  Remote().getCategories();
+    categories =  Remote().getCategories(context);
 
   }
 

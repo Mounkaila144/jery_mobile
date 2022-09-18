@@ -69,28 +69,6 @@ class Data {
 }
 
 class LoginState extends State<Login> {
-  final link=url;
-
-  void upDateSharedPreferences(String token, int id,role) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    _prefs.setString('token', token);
-    _prefs.setString('role', role);
-    _prefs.setInt('id', id);
-  }
-  Future<User>? user;
-  Future<String?> token(String key) async {
-    SharedPreferences _prefs = await SharedPreferences.getInstance();
-    var token = _prefs.getString('token');
-    return token;
-  }
-
-  bool connect = false;
-
-  void Connexion() {
-    setState(() {
-      connect = true;
-    });
-  }
 
   void Deconnexion() {
     setState(() async {
@@ -121,7 +99,7 @@ class LoginState extends State<Login> {
             ],
           ),
         ),
-        child: user==null?
+        child:
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
@@ -137,7 +115,13 @@ class LoginState extends State<Login> {
                   FadeAnimation(
                       1,
                       Text(
-                        "Connecter Vous",
+                        "connecter =${Provider.of<LoginVm>(context).connect?"yes":"no"}",
+                        style: TextStyle(color: Colors.white, fontSize: 40),
+                      )),
+                  FadeAnimation(
+                      1,
+                      Text(
+                        "admin =${Provider.of<LoginVm>(context).admin?"yes":"no"}",
                         style: TextStyle(color: Colors.white, fontSize: 40),
                       )),
                   SizedBox(
@@ -269,11 +253,10 @@ class LoginState extends State<Login> {
                                   child: TextButton(
                                     onPressed: () async {
                                       if (_formKey.currentState!.validate()) {
-                                        setState(() {
-                                          user =Provider.of<LoginVm>(context,listen: false).login(
+                                          Provider.of<LoginVm>(context,listen: false).login(
+                                            context: context,
                                           email: emailController.text,
                                           password: passwordController.text);
-                                        });
                                       } else {
                                         setState(() {
                                           valide = true;
@@ -297,74 +280,8 @@ class LoginState extends State<Login> {
               ),
             )
           ],
-        ):buildFutureBuilder(),
+        )
       ),
     );
   }
-
-FutureBuilder<User> buildFutureBuilder() {
-  return FutureBuilder<User>(
-    future: user,
-    builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        Navigator.push(context, MaterialPageRoute(builder:
-                (context)=>MyApp()));
-
-      } else if (snapshot.hasError) {
-        return themejolie(
-          donner: Center(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 200,
-                ),
-                FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 10),))
-                ,
-                SizedBox(
-                  height: 70,
-                ),
-                FadeAnimation(
-                  1.6,
-                  Container(
-                    height: 50,
-                    margin: EdgeInsets.symmetric(horizontal: 50),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
-                        color: Colors.red[900]),
-                    child: Center(
-                      child:TextButton(
-                        onPressed: () async {
-                          Navigator.pop(context);
-                        },
-                        child: Text("Retour", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      }
-
-      return themejolie(
-        donner: Center(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 200,
-            ),
-            LoadingJumpingLine.circle(
-              borderColor: Colors.black,
-              borderSize: 3.0,
-              size: 200.0,
-              backgroundColor: Colors.white,
-              duration: Duration(milliseconds: 500),
-            ),
-          ],
-        ),
-      ),);
-    },
-  );
-}
 }

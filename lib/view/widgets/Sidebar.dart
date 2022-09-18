@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jery/main.dart';
 import 'package:jery/viewModel/LogibVm.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,11 @@ class Sidebar extends StatefulWidget {
 }
 
 class _SidebarState extends State<Sidebar> {
-
+  @override
+  void initState() {
+    Provider.of<LoginVm>(context,listen: false).connecter();
+    super.initState();
+  }
   Deconnexion() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     await _prefs.remove('token');
@@ -121,10 +126,9 @@ class _SidebarState extends State<Sidebar> {
                       ),
                       title: const Text('Deconnection'),
                       onTap: () {
-                        Provider.of<LoginVm>(context,listen: false).connect=false;
-                        Provider.of<LoginVm>(context,listen: false).admin=false;
+                       Deconnexion();
                         Navigator.push(context, MaterialPageRoute(builder:
-                            (context)=>Menu()));
+                            (context)=>MyApp()));
                       },
                     ),
 
@@ -206,7 +210,7 @@ class _SidebarState extends State<Sidebar> {
                       onTap: () {
                         Deconnexion();
                         Navigator.push(context, MaterialPageRoute(builder:
-                            (context)=>Menu()));
+                            (context)=>MyApp()));
                       },
                     ),
 

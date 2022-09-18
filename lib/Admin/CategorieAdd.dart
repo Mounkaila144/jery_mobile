@@ -32,7 +32,7 @@ class _CategoriesAddState extends State<CategoriesAdd> {
   }
 
   getData() async {
-    categories =  Remote().getCategories();
+    categories =  Remote().getCategories(context);
 
   }
 

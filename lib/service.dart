@@ -1,9 +1,12 @@
+
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:jery/Admin/ListesUsers.dart';
 import 'package:jery/Crud.dart';
+import 'package:jery/viewModel/LogibVm.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Admin/CommandesList.dart';
@@ -49,7 +52,7 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
   else Exception("eureur");
 }
 
-  Future<List<Categories>?> getCategories() async {
+  Future<List<Categories>?> getCategories(context) async {
     var url = 'http://$link/api/categories';
     Dio dio = Dio();
     dio.interceptors.add(PrettyDioLogger(
@@ -62,6 +65,7 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
     final response = await dio.get(url);
 
     if (response.statusCode == 200) {
+      Provider.of<LoginVm>(context,listen: false).connecter();
       final body = response.data;
       return categoriesFromJson(body);
     }
