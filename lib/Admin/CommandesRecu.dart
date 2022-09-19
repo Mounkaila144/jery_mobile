@@ -28,6 +28,10 @@ class CommandeRecus extends StatefulWidget {
 
 class _CommandeRecusState extends State<CommandeRecus> {
   final link=url;
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
   String _selectedMenu = '';
   late Future <List<Commandes>?> articles;
   var isLoaded = false;
@@ -60,7 +64,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
 
   // Future Remove(int id_article) async {
   //   var url = 'https://${link}/api/articles/$id_article';
-  //   Dio dio = Dio();
+  //   
   //   dio.interceptors.add(PrettyDioLogger(
   //     requestHeader: true,
   //     requestBody: true,

@@ -84,7 +84,6 @@ class EditUserState extends State<EditUser> {
   Future<User>? categorie;
   final link=url;
 
-
   @override
   void initState() {
     super.initState();
@@ -103,20 +102,23 @@ class EditUserState extends State<EditUser> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var id =_prefs.get("id");
 
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    dio.options.headers["Content-Type"]="application/json";
-    dio.options.headers["Accept"]="application/json";
-    final response = await dio.put('http://$link/api/users/$id', data: formData);
-    var statut = response.statusCode;
+    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users/$id'));
+    request.fields['name'] = nom;
+    request.fields['email'] = email;
+    var body;
+    var statut;
+    request.send().then((result) async{
+      http.Response.fromStream(result)
+          .then((response) {
+        var statut = response.statusCode;
+        if (statut == 200) {
+          body=response.body;
+          body=response.statusCode;
+        }
+      });
+    });
     if (statut == 200) {
-      return userFromJson(response.data);
+      return userFromJson(body);
     } else {
       throw Exception("eureur");
     }

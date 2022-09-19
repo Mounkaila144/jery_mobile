@@ -78,6 +78,10 @@ class ListesUsers extends StatefulWidget {
 
 class _ListesUsersState extends State<ListesUsers> {
   final link=url;
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
   String _selectedMenu = '';
   late Future <List<Users>?> users;
   var isLoaded = false;
@@ -110,7 +114,7 @@ class _ListesUsersState extends State<ListesUsers> {
 
   // Future Remove(int id_article) async {
   //   var url = 'https://${link}/api/users/$id_article';
-  //   Dio dio = Dio();
+  //   
   //   dio.interceptors.add(PrettyDioLogger(
   //     requestHeader: true,
   //     requestBody: true,

@@ -200,29 +200,27 @@ class AddOneProducssState extends State<AddOneProducss> {
     required XFile? photo,
   }) async {
     var image =File(photo!.path);
-    String fileName = image.path.split('/').last;
-    FormData formData = FormData.fromMap({
-      "file": await MultipartFile.fromFile(image.path, filename:fileName),
-      "name":nom,
-      "categorie_id":id,
-      "price":price,
-      "qty":qty
 
+    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/categories'));
+    request.fields['name'] = nom;
+    request.fields['categorie_id'] ="$id";
+    request.fields['price'] = price;
+    request.fields['qty'] = qty;
+    request.files.add(await http.MultipartFile.fromPath("file", image.path));
+    var body;
+    var statut;
+    request.send().then((result) async{
+      http.Response.fromStream(result)
+          .then((response) {
+        var statut = response.statusCode;
+        if (statut == 200) {
+          body=response.body;
+          body=response.statusCode;
+        }
+      });
     });
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    dio.options.headers["Content-Type"]="multipart/form-data";
-    dio.options.headers["Accept"]="application/json";
-    final response = await dio.post('http://$link/api/products', data: formData);
-    var statut = response.statusCode;
     if (statut == 200) {
-      return producsFromJson(response.data);
+      return producsFromJson(body);
     } else {
       throw Exception("eureur");
     }

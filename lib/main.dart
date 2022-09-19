@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:jery/Menu.dart';
 import 'package:jery/view/screen/productScreen.dart';
@@ -8,6 +10,8 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
+  HttpOverrides.global = MyHttpOverrides();
+
 }
 
 class MyApp extends StatelessWidget {
@@ -23,7 +27,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ProductsVM(total: 0),
         ),
         ChangeNotifierProvider(
-          create: (context) => LoginVm(admin: false, connect: false),
+          create: (context) => LoginVm(admin: true, connect: false),
         ),
         ChangeNotifierProvider(
           create: (context) => DrawerScreenProvider(),
@@ -40,5 +44,12 @@ class MyApp extends StatelessWidget {
         home: Menu(),
       ),
     );
+  }
+}
+class MyHttpOverrides extends HttpOverrides{
+  @override
+  HttpClient createHttpClient(SecurityContext? context){
+    return super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }

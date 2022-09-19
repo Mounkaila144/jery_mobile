@@ -13,40 +13,26 @@ import 'Admin/CommandesList.dart';
 import 'global.dart';
 class Remote{
 final link=url;
-
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
 
   Future<List<Products>?> getProducts() async {
     var url = 'http://$link/api/products';
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    final response = await dio.get(url);
+       final response = await https.get(Uri.parse(url), headers:buildHeaders());
 
     if (response.statusCode == 200) {
-      final body = response.data;
+      final body = response.body;
       return productsFromJson(body);
     }
     else Exception("eureur");
   }
 Future<List<Products>?> getProductsByCategorie(idCategorie) async {
   var url = 'http://$link/api/products?categorie_id=$idCategorie';
-  Dio dio = Dio();
-  dio.interceptors.add(PrettyDioLogger(
-    requestHeader: true,
-    requestBody: true,
-    responseBody: true,
-    responseHeader: false,
-    compact: false,
-  ));
-  final response = await dio.get(url);
-
+  final response = await https.get(Uri.parse(url), headers:buildHeaders());
   if (response.statusCode == 200) {
-    final body = response.data;
+    final body = response.body;
     return productsFromJson(body);
   }
   else Exception("eureur");
@@ -54,19 +40,11 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
 
   Future<List<Categories>?> getCategories(context) async {
     var url = 'http://$link/api/categories';
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    final response = await dio.get(url);
+    
+       final response = await https.get(Uri.parse(url), headers:buildHeaders());
 
     if (response.statusCode == 200) {
-      Provider.of<LoginVm>(context,listen: false).connecter();
-      final body = response.data;
+      final body = response.body;
       return categoriesFromJson(body);
     }
     else Exception("eureur");
@@ -74,18 +52,11 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
 
   Future<List<Commandes>?> getCommandes() async {
     var url = 'http://$link/api/commandes';
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    final response = await dio.get(url);
+    
+       final response = await https.get(Uri.parse(url), headers:buildHeaders());
 
     if (response.statusCode == 200) {
-      final body = response.data;
+      final body = response.body;
       return commandesFromJson(body);
     }
     else Exception("eureur");
@@ -94,21 +65,23 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
 
   Future<List<Users>?> getUsers() async {
     var url = 'http://$link/api/users';
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    final response = await dio.get(url);
+    
+       final response = await https.get(Uri.parse(url), headers:buildHeaders());
 
     if (response.statusCode == 200) {
-      final body = response.data;
+      final body = response.body;
       return usersFromJson(body);
     }
     else Exception("eureur");
   }
-
+static Map<String, String> buildHeaders({String? accessToken}) {
+  Map<String, String> headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+  };
+  if (accessToken != null) {
+    headers['Authorization'] = 'Bearer $accessToken';
+  }
+  return headers;
+}
 }

@@ -10,6 +10,8 @@ import '../../model/productsModel.dart';
 import '../../viewModel/productsVm.dart';
 import '../widgets/Sidebar.dart';
 import '../widgets/cartIteme.dart';
+import 'package:http/http.dart' as http;
+
 
 // To parse this JSON data, do
 //
@@ -68,26 +70,22 @@ class _CartScreenState extends State<CartScreen> {
   Future<Commandes> ActionES({
     required String contenue,
   }) async {
-    var formData ={
-      "status":true,
-      "contenue":contenue,
-      "user_id":1
 
-    };
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    dio.options.headers["Content-Type"]="application/json";
-    dio.options.headers["Accept"]="application/json";
-    final response = await dio.post('http://$link/api/commandes', data: formData);
+    final response = await http.post(Uri.parse('http://$link/api/commandes'),
+      //headers: HelperService.buildHeaders(),
+      body: jsonEncode(
+        {
+          "status":true,
+          "contenue":contenue,
+          "user_id":1
+        },
+      ),
+    );
+
+
     var statut = response.statusCode;
     if (statut == 200) {
-      return commandesFromJson(response.data);
+      return commandesFromJson(response.body);
     } else {
       throw Exception("eureur");
     }

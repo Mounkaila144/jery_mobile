@@ -11,6 +11,7 @@ import 'package:jery/CategorieList.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:logger/logger.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:pretty_http_logger/pretty_http_logger.dart';
 
 import '../FadeAnimation.dart';
 import '../global.dart';
@@ -69,6 +70,10 @@ class Categorie {
 class AddOneCategoriesState extends State<AddOneCategories> {
    Future<Categorie>? categorie;
    final link=url;
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
 
 
    @override
@@ -83,32 +88,34 @@ class AddOneCategoriesState extends State<AddOneCategories> {
      required String active,
      required XFile? photo,
    }) async {
+     Map<String, String> headers = {
+       "Accept": "application/json",
+       "Content-Type": "application/json",
+     };
     var image =File(photo!.path);
-     String fileName = image.path.split('/').last;
-     FormData formData = FormData.fromMap({
-       "file": await MultipartFile.fromFile(image.path, filename:fileName),
-       "name":nom,
-       "is_active":active
 
+     final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/categories'));
+     request.fields['nom'] = nom;
+     request.fields['active'] = active;
+     request.files.add(await http.MultipartFile.fromPath("file", image.path));
+     var body;
+     var statut;
+     request.send().then((result) async{
+       http.Response.fromStream(result)
+           .then((response) {
+         var statut = response.statusCode;
+         if (statut == 200) {
+           body=response.body;
+           body=response.statusCode;
+         }
+       });
      });
-     Dio dio = Dio();
-     dio.interceptors.add(PrettyDioLogger(
-       requestHeader: true,
-       requestBody: true,
-       responseBody: true,
-       responseHeader: false,
-       compact: false,
-     ));
-     dio.options.headers["Content-Type"]="multipart/form-data";
-     dio.options.headers["Accept"]="application/json";
-     final response = await dio.post('http://$link/api/categories', data: formData);
-     var statut = response.statusCode;
      if (statut == 200) {
        Navigator.push(
            context,
            MaterialPageRoute(
                builder: (context) =>CategoriesAdd()));
-       return categorieFromJson(response.data);
+       return categorieFromJson(body);
      } else {
        throw Exception("eureur");
      }

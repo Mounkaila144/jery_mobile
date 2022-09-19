@@ -46,27 +46,25 @@ class AddUserState extends State<AddUser> {
     required String email,
     required String password
   }) async {
-    FormData formData = FormData.fromMap({
-      "name":nom,
-      "email":email,
-      "role":"client",
-      "password":password
-
+    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users'));
+    request.fields['nom'] = nom;
+    request.fields['email'] = email;
+    request.fields['role'] = "role";
+    request.fields['password'] = password;
+    var body;
+    var statut;
+    request.send().then((result) async{
+      http.Response.fromStream(result)
+          .then((response) {
+        var statut = response.statusCode;
+        if (statut == 200) {
+          body=response.body;
+          body=response.statusCode;
+        }
+      });
     });
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    dio.options.headers["Content-Type"]="application/json";
-    dio.options.headers["Accept"]="application/json";
-    final response = await dio.post('http://$link/api/register', data: formData);
-    var statut = response.statusCode;
     if (statut == 200) {
-      return userFromJson(response.data);
+      return userFromJson(body);
     } else {
       throw Exception("eureur");
     }

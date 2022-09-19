@@ -51,26 +51,24 @@ class EditProductsState extends State<EditProducts> {
     required String price,
     required int qty,
   }) async {
-    var formData ={
-      "name":nom,
-      "price":price,
-      "qty":qty,
-    };
-
-    Dio dio = Dio();
-    dio.interceptors.add(PrettyDioLogger(
-      requestHeader: true,
-      requestBody: true,
-      responseBody: true,
-      responseHeader: false,
-      compact: false,
-    ));
-    dio.options.headers["Content-Type"]="application/json";
-    dio.options.headers["Accept"]="application/json";
-    final response = await dio.post('http://$link/api/users/$id', data: formData);
-    var statut = response.statusCode;
+    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users'));
+    request.fields['name'] = nom;
+    request.fields['price'] = price;
+    request.fields['qty'] = "$qty";
+    var body;
+    var statut;
+    request.send().then((result) async{
+      http.Response.fromStream(result)
+          .then((response) {
+        var statut = response.statusCode;
+        if (statut == 200) {
+          body=response.body;
+          body=response.statusCode;
+        }
+      });
+    });
     if (statut == 200) {
-      return producsFromJson(response.data);
+      return producsFromJson(body);
     } else {
       throw Exception("eureur");
     }

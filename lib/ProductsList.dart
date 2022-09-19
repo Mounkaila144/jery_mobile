@@ -33,6 +33,10 @@ class ProductsList extends StatefulWidget {
 
 class _ProductsListState extends State<ProductsList> {
   final link=url;
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
   String _selectedMenu = '';
   late Future <List<Products>?> articles;
   var isLoaded = false;
