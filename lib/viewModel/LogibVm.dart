@@ -10,7 +10,6 @@ import '../home.dart';
 
 class LoginVm with ChangeNotifier {
   LoginVm({required this.connect, required this.admin});
-
   bool connect;
   bool admin;
 
@@ -21,7 +20,7 @@ class LoginVm with ChangeNotifier {
     _prefs.setInt('id', id);
   }
 
-  Future login({
+  Future<User> login({
     context,
     required String email,
     required String password,
@@ -30,19 +29,23 @@ class LoginVm with ChangeNotifier {
     request.fields['email'] = email;
     request.fields['password'] = password;
 
-   await request.send().then((result) async{
-      http.Response.fromStream(result)
-          .then((response) {
-        var statut = response.statusCode;
-        print("statut reel ${statut}");
-        if (statut == 200) {
-          final user = userFromJson(response.body);
-          upDateSharedPreferences(user.token, user.data.id, user.data.role);
-          connecter();
-        }
-      });
-    });
+    var r=await request.send();
+    var response=await http.Response.fromStream(r);
+    final statusType = response.statusCode;
+    print("statut ${response.statusCode}");
 
+    switch (statusType) {
+      case 200:
+        final user = userFromJson(response.body);
+        upDateSharedPreferences(user.token, user.data.id, user.data.role);
+        connecter();
+
+        return user;
+      case 401:
+        throw Exception('Identifiant invalide');
+      default:
+        throw Exception('Error contacting the server!');
+    }
   }
 
   Future<void> connecter() async {

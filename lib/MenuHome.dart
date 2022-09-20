@@ -152,7 +152,7 @@ class _MenuHomeState extends State<MenuHome> {
                       SizedBox(
                         height: 200,
                       ),
-                      FadeAnimation(1, Text("${snap.error.toString()}", style: TextStyle(color: Colors.white, fontSize: 30),))
+                      FadeAnimation(1, Text("${snap.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
                       ,
                       SizedBox(
                         height: 70,

@@ -7,6 +7,8 @@ import 'package:jery/viewModel/LogibVm.dart';
 import 'package:jery/viewModel/drawer_screen_provider.dart';
 import 'package:jery/viewModel/productsVm.dart';
 import 'package:provider/provider.dart';
+import 'package:logger/logger.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -16,7 +18,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {

@@ -95,21 +95,16 @@ class AddOneCategoriesState extends State<AddOneCategories> {
     var image =File(photo!.path);
 
      final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/categories'));
-     request.fields['nom'] = nom;
+     request.fields['name'] = nom;
      request.fields['active'] = active;
      request.files.add(await http.MultipartFile.fromPath("file", image.path));
-     var body;
-     var statut;
-     request.send().then((result) async{
-       http.Response.fromStream(result)
-           .then((response) {
-         var statut = response.statusCode;
-         if (statut == 200) {
-           body=response.body;
-           body=response.statusCode;
-         }
-       });
-     });
+     var r=await request.send();
+     var response=await http.Response.fromStream(r);
+     final statut = response.statusCode;
+     final body = response.body;
+     print("statut ${response.statusCode}");
+     print("statut ${response.headers}");
+     print("body ${response.body}");
      if (statut == 200) {
        Navigator.push(
            context,
@@ -344,7 +339,40 @@ class AddOneCategoriesState extends State<AddOneCategories> {
         if (snapshot.hasData) {
 
         } else if (snapshot.hasError) {
-          return Text("Eror");
+          themejolie(
+            donner: Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                  ),
+                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
+                  ,
+                  SizedBox(
+                    height: 70,
+                  ),
+                  FadeAnimation(
+                    1.6,
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: 50),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.red[900]),
+                      child: Center(
+                        child:TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Recharger la page", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
 
         return themejolie(

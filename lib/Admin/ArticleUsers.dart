@@ -55,18 +55,11 @@ class EditProductsState extends State<EditProducts> {
     request.fields['name'] = nom;
     request.fields['price'] = price;
     request.fields['qty'] = "$qty";
-    var body;
-    var statut;
-    request.send().then((result) async{
-      http.Response.fromStream(result)
-          .then((response) {
-        var statut = response.statusCode;
-        if (statut == 200) {
-          body=response.body;
-          body=response.statusCode;
-        }
-      });
-    });
+    var r=await request.send();
+    var response=await http.Response.fromStream(r);
+    final statut = response.statusCode;
+    final body = response.body;
+    print("statut ${response.statusCode}");;
     if (statut == 200) {
       return producsFromJson(body);
     } else {

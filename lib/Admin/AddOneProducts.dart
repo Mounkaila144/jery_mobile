@@ -29,6 +29,11 @@ class AddOneProducss extends StatefulWidget {
 //     final producs = producsFromJson(jsonString);
 
 
+// To parse this JSON data, do
+//
+//     final producs = producsFromJson(jsonString);
+
+
 Producs producsFromJson(String str) => Producs.fromJson(json.decode(str));
 
 String producsToJson(Producs data) => json.encode(data.toJson());
@@ -37,143 +42,43 @@ class Producs {
   Producs({
     required this.id,
     required this.name,
-    required this.code,
-    required this.type,
-    required this.barcodeSymbology,
     required this.categorieId,
-    required this.cost,
-    required this.margeDetail,
-    required this.margeGros,
-    required this.remiseDetail,
-    required this.prixMinDetail,
-    required this.remiseGros,
-    required this.prixMinGros,
     required this.price,
     required this.qty,
-    required this.alertQuantity,
-    required this.promotion,
-    required this.promotionPrice,
-    required this.startingDate,
-    required this.lastDate,
     required this.image,
-    required this.file,
-    required this.isVariant,
-    required this.featured,
-    required this.productList,
-    required this.qtyList,
-    required this.priceList,
-    required this.productDetails,
-    required this.isActive,
-    required this.isStockable,
-    required this.prixgros,
     required this.createdAt,
     required this.updatedAt,
   });
 
   int id;
   String name;
-  String code;
-  String type;
-  dynamic barcodeSymbology;
   int categorieId;
-  dynamic cost;
-  dynamic margeDetail;
-  dynamic margeGros;
-  dynamic remiseDetail;
-  dynamic prixMinDetail;
-  dynamic remiseGros;
-  dynamic prixMinGros;
   String price;
   int qty;
-  dynamic alertQuantity;
-  dynamic promotion;
-  dynamic promotionPrice;
-  dynamic startingDate;
-  dynamic lastDate;
   String image;
-  dynamic file;
-  dynamic isVariant;
-  dynamic featured;
-  dynamic productList;
-  dynamic qtyList;
-  dynamic priceList;
-  dynamic productDetails;
-  dynamic isActive;
-  dynamic isStockable;
-  dynamic prixgros;
-  dynamic createdAt;
-  dynamic updatedAt;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   factory Producs.fromJson(Map<String, dynamic> json) => Producs(
     id: json["id"],
     name: json["name"],
-    code: json["code"],
-    type: json["type"],
-    barcodeSymbology: json["barcode_symbology"],
-    categorieId: json["categorie_id"],
-    cost: json["cost"],
-    margeDetail: json["marge_detail"],
-    margeGros: json["marge_gros"],
-    remiseDetail: json["remise_detail"],
-    prixMinDetail: json["prix_min_detail"],
-    remiseGros: json["remise_gros"],
-    prixMinGros: json["prix_min_gros"],
     price: json["price"],
+      categorieId: json["categorie_id"],
     qty: json["qty"],
-    alertQuantity: json["alert_quantity"],
-    promotion: json["promotion"],
-    promotionPrice: json["promotion_price"],
-    startingDate: json["starting_date"],
-    lastDate: json["last_date"],
     image: json["image"],
-    file: json["file"],
-    isVariant: json["is_variant"],
-    featured: json["featured"],
-    productList: json["product_list"],
-    qtyList: json["qty_list"],
-    priceList: json["price_list"],
-    productDetails: json["product_details"],
-    isActive: json["is_active"],
-    isStockable: json["is_stockable"],
-    prixgros: json["prixgros"],
-    createdAt: json["created_at"],
-    updatedAt: json["updated_at"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "name": name,
-    "code": code,
-    "type": type,
-    "barcode_symbology": barcodeSymbology,
     "categorie_id": categorieId,
-    "cost": cost,
-    "marge_detail": margeDetail,
-    "marge_gros": margeGros,
-    "remise_detail": remiseDetail,
-    "prix_min_detail": prixMinDetail,
-    "remise_gros": remiseGros,
-    "prix_min_gros": prixMinGros,
     "price": price,
     "qty": qty,
-    "alert_quantity": alertQuantity,
-    "promotion": promotion,
-    "promotion_price": promotionPrice,
-    "starting_date": startingDate,
-    "last_date": lastDate,
     "image": image,
-    "file": file,
-    "is_variant": isVariant,
-    "featured": featured,
-    "product_list": productList,
-    "qty_list": qtyList,
-    "price_list": priceList,
-    "product_details": productDetails,
-    "is_active": isActive,
-    "is_stockable": isStockable,
-    "prixgros": prixgros,
-    "created_at": createdAt,
-    "updated_at": updatedAt,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
   };
 }
 
@@ -201,25 +106,21 @@ class AddOneProducssState extends State<AddOneProducss> {
   }) async {
     var image =File(photo!.path);
 
-    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/categories'));
+    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/products'));
     request.fields['name'] = nom;
     request.fields['categorie_id'] ="$id";
-    request.fields['price'] = price;
+    request.fields['price'] =" $price";
     request.fields['qty'] = qty;
     request.files.add(await http.MultipartFile.fromPath("file", image.path));
-    var body;
-    var statut;
-    request.send().then((result) async{
-      http.Response.fromStream(result)
-          .then((response) {
-        var statut = response.statusCode;
-        if (statut == 200) {
-          body=response.body;
-          body=response.statusCode;
-        }
-      });
-    });
+    var r=await request.send();
+    var response=await http.Response.fromStream(r);
+    final statut = response.statusCode;
+    final body = response.body;
+    print("statut ${response.statusCode}");
+    print("statut ${response.headers}");
+    print("body ${response.body}");
     if (statut == 200) {
+     await MaterialPageRoute(builder: (context) =>ProductsAdd(id: id ));
       return producsFromJson(body);
     } else {
       throw Exception("eureur");
@@ -480,12 +381,42 @@ class AddOneProducssState extends State<AddOneProducss> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>ProductsAdd(id: snapshot.data!.id )));
+
         } else if (snapshot.hasError) {
-          return Text("Eror");
+          return  themejolie(
+            donner: Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                  ),
+                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
+                  ,
+                  SizedBox(
+                    height: 70,
+                  ),
+                  FadeAnimation(
+                    1.6,
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: 50),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.red[900]),
+                      child: Center(
+                        child:TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Recharger la page", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
 
         return themejolie(

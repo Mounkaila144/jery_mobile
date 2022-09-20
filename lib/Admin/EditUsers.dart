@@ -105,18 +105,11 @@ class EditUserState extends State<EditUser> {
     final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users/$id'));
     request.fields['name'] = nom;
     request.fields['email'] = email;
-    var body;
-    var statut;
-    request.send().then((result) async{
-      http.Response.fromStream(result)
-          .then((response) {
-        var statut = response.statusCode;
-        if (statut == 200) {
-          body=response.body;
-          body=response.statusCode;
-        }
-      });
-    });
+    var r=await request.send();
+    var response=await http.Response.fromStream(r);
+    final statut = response.statusCode;
+    final body = response.body;
+    print("statut ${response.statusCode}");
     if (statut == 200) {
       return userFromJson(body);
     } else {
