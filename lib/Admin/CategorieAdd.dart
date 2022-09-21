@@ -2,12 +2,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jery/Admin/AddOneCategories.dart';
+import 'package:jery/Admin/EditCategorie.dart';
 import 'package:jery/Admin/ProductsAdd.dart';
 import 'package:jery/Crud.dart';
 import 'package:jery/ProductsList.dart';
 import 'package:jery/service.dart';
 import 'package:jery/theme.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 
 import '../FadeAnimation.dart';
@@ -20,10 +22,15 @@ class CategoriesAdd extends StatefulWidget {
   @override
   State<CategoriesAdd> createState() => _CategoriesAddState();
 }
+enum Menu { itemOne, itemTwo, itemThree, itemFour }
 
 class _CategoriesAddState extends State<CategoriesAdd> {
   Future <List<Categories>?>? categories;
   final link=url;
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
 
   @override
   void initState() {
@@ -35,6 +42,33 @@ class _CategoriesAddState extends State<CategoriesAdd> {
   getData() async {
     categories =  Remote().getCategories(context);
 
+  }
+  static Map<String, String> buildHeaders({String? accessToken}) {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    };
+    if (accessToken != null) {
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+    return headers;
+  }
+
+  Future Remove(int id_categorie) async {
+    var url = 'http://${link}/api/categories/$id_categorie';
+
+    final response = await https.delete(Uri.parse(url), headers:buildHeaders());
+    var status=response.statusCode;
+    var body=response.body;
+    print("status $status");
+    print("body $body");
+    status ==200?
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => CategoriesAdd())):
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => Text("eror")));
   }
 
   @override
@@ -137,6 +171,36 @@ class _CategoriesAddState extends State<CategoriesAdd> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
+                                PopupMenuButton<Menu>(
+                                  // Callback that sets the selected popup menu item.
+                                    onSelected: (Menu item) async {
+                                      switch (item) {
+                                        case Menu.itemOne:
+                                        // TODO: Handle this case.
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => EditCategorie(
+                                                    id: data[index].id,
+                                                    active: data[index].isActive,
+                                                    name: data[index].name,
+
+                                                  )));
+                                          break;
+                                        case Menu.itemTwo:
+                                        // TODO: Handle this case.
+                                          Remove(data[index].id);
+
+                                          break;
+                                      }
+                                    },
+                                    itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry<Menu>>[
+                                      Iteme(Menu.itemOne, Icons.edit, Colors.blue,
+                                          "Modifier"),
+                                      Iteme(Menu.itemTwo, Icons.highlight_remove,
+                                          Colors.red, "Suprimer"),
+                                    ]),
                               ],
                             ),
                           )),
@@ -202,4 +266,23 @@ class _CategoriesAddState extends State<CategoriesAdd> {
       ),
     );
   }
+}
+PopupMenuItem<Menu> Iteme(vauleIteme, IconData icon, Color color, String text) {
+  return PopupMenuItem<Menu>(
+    value: vauleIteme,
+    child: Row(
+      children: [
+        Icon(icon, color: color, size: 22),
+        SizedBox(
+          width: 10,
+        ),
+        Text(
+          text,
+          style: TextStyle(
+            color: Colors.blue.shade900,
+          ),
+        ),
+      ],
+    ),
+  );
 }

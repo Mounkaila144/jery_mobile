@@ -19,6 +19,60 @@ import '../FadeAnimation.dart';
 import '../global.dart';
 import '../theme.dart';
 
+// To parse this JSON data, do
+//
+//     final user = userFromJson(jsonString);
+
+import 'package:meta/meta.dart';
+import 'dart:convert';
+
+User userFromJson(String str) => User.fromJson(json.decode(str));
+
+String userToJson(User data) => json.encode(data.toJson());
+
+class User {
+  User({
+    required this.id,
+    required this.name,
+    required this.role,
+    required this.email,
+    required this.emailVerifiedAt,
+    required this.password,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  int id;
+  String name;
+  String role;
+  String email;
+  dynamic emailVerifiedAt;
+  String password;
+  DateTime createdAt;
+  DateTime updatedAt;
+
+  factory User.fromJson(Map<String, dynamic> json) => User(
+    id: json["id"],
+    name: json["name"],
+    role: json["role"],
+    email: json["email"],
+    emailVerifiedAt: json["email_verified_at"],
+    password: json["password"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "name": name,
+    "role": role,
+    "email": email,
+    "email_verified_at": emailVerifiedAt,
+    "password": password,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
+  };
+}
 
 
 class AddUser extends StatefulWidget {

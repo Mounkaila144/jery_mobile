@@ -14,6 +14,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../FadeAnimation.dart';
 import '../global.dart';
 import '../theme.dart';
+import 'AddUsers.dart';
 import 'CommandesList.dart';
 
 enum Menu { itemOne, itemTwo, itemThree, itemFour }
@@ -34,6 +35,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
   ]);
   String _selectedMenu = '';
   late Future <List<Commandes>?> articles;
+  late Future <User?> user;
   var isLoaded = false;
 
   @override
@@ -123,7 +125,7 @@ class _CommandeRecusState extends State<CommandeRecus> {
                             padding: const EdgeInsets.all(4.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.max,
+                              //mainAxisSize: MainAxisSize.max,
                               children: [
                                 SizedBox(
                                   child: Column(
@@ -133,23 +135,48 @@ class _CommandeRecusState extends State<CommandeRecus> {
                                       const SizedBox(
                                         height: 5.0,
                                       ),
-                                      RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        text: TextSpan(
-                                            text: 'Envoyer par user n°: ',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey.shade800,
-                                                fontSize: 16.0),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                  '${data[index].userId}\n',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold)),
-                                            ]),
+
+                                      FutureBuilder <User?>(
+                                        future: user=Remote().getuser(data[index].userId),
+                                        builder: (context,snap){
+                                          if(snap.hasData) {
+                                            return
+                                              RichText(
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                text: TextSpan(
+                                                    text: 'Envoyer par user n°:${snap
+                                                        .data!.name}',
+                                                    style: TextStyle(
+                                                        color: Colors.blueGrey
+                                                            .shade800,
+                                                        fontSize: 16.0),
+                                                    children: [
+                                                      TextSpan(
+                                                          text:
+                                                          '${data[index]
+                                                              .userId}\n',
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                              FontWeight.bold)),
+                                                    ]),
+                                              );
+                                          }
+                                          else if(snap.hasError){
+                                            return
+                                              Text("Eureur de chargement");
+                                          }
+                                          return
+                                            LoadingJumpingLine.circle(
+                                              borderColor: Colors.black,
+                                              borderSize: 3.0,
+                                              size: 100.0,
+                                              backgroundColor: Colors.white,
+                                              duration: Duration(milliseconds: 500),
+                                            );
+                                        },
                                       ),
+
                                       RichText(
                                         maxLines: 1,
                                         text: TextSpan(

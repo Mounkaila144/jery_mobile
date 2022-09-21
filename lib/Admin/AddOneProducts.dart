@@ -120,7 +120,10 @@ class AddOneProducssState extends State<AddOneProducss> {
     print("statut ${response.headers}");
     print("body ${response.body}");
     if (statut == 200) {
-     await MaterialPageRoute(builder: (context) =>ProductsAdd(id: id ));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>ProductsAdd(id: id )));
       return producsFromJson(body);
     } else {
       throw Exception("eureur");
@@ -165,18 +168,12 @@ class AddOneProducssState extends State<AddOneProducss> {
                   FadeAnimation(
                       1,
                       Text(
-                        "Connecter Vous",
+                        "Ajouter un nouveau Produits",
                         style: TextStyle(color: Colors.white, fontSize: 40),
                       )),
                   SizedBox(
                     height: 10,
                   ),
-                  FadeAnimation(
-                      1.3,
-                      Text(
-                        "Bienvenu",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      )),
                 ],
               ),
             ),
@@ -199,7 +196,7 @@ class AddOneProducssState extends State<AddOneProducss> {
                               ? FadeAnimation(
                               1000,
                               Text(
-                                "Votre mots de passe ou votre adress email est invalide",
+                                "Donner invalide",
                                 style: TextStyle(
                                     color: Colors.red.shade900,
                                     fontSize: 25),
@@ -208,7 +205,7 @@ class AddOneProducssState extends State<AddOneProducss> {
                           FadeAnimation(
                               1000,
                               Text(
-                                "Entrer votre Email et votre mots de passe",
+                                "Entrer les donner",
                                 style: TextStyle(
                                     color: Colors.black, fontSize: 25),
                               )),
@@ -242,7 +239,7 @@ class AddOneProducssState extends State<AddOneProducss> {
                                         FormBuilderValidators.compose([
                                           FormBuilderValidators.minLength(3,
                                               errorText:
-                                              "Votre nom est inferieur à 3"),
+                                              "Votre nom est inferieur à 3 Caractere"),
                                           FormBuilderValidators.required(
                                               errorText: "Votre nom est vide"),
                                         ]),
@@ -264,11 +261,11 @@ class AddOneProducssState extends State<AddOneProducss> {
                                       child: TextFormField(
                                         validator:
                                         FormBuilderValidators.compose([
-                                          FormBuilderValidators.minLength(3,
+                                          FormBuilderValidators.integer(
                                               errorText:
-                                              "La valeur est inferieur à 3"),
+                                              "La valeur est inferieur à "),
                                           FormBuilderValidators.required(
-                                              errorText: "Valeur vide"),
+                                              errorText: "Valeur non numerique"),
                                         ]),
                                         controller: priceController,
                                         decoration: InputDecoration(
@@ -288,9 +285,9 @@ class AddOneProducssState extends State<AddOneProducss> {
                                       child: TextFormField(
                                         validator:
                                         FormBuilderValidators.compose([
-                                          FormBuilderValidators.minLength(3,
+                                          FormBuilderValidators.integer(
                                               errorText:
-                                              "La valeur est inferieur à 3"),
+                                              "La valeur non numerique "),
                                           FormBuilderValidators.required(
                                               errorText: "Valeur vide"),
                                         ]),

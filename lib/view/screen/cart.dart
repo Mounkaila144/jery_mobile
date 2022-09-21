@@ -121,7 +121,7 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   Column(
                     children: List.generate(
-                         value.lst.length ?? 3,
+                         value.lst.length,
 
                         (index) =>
                            Dismissible(

@@ -95,21 +95,32 @@ class EditUserState extends State<EditUser> {
     required String nom,
     required String email
   }) async {
-    var formData ={
-      "name":nom,
-      "email":email
-    };
+     Map<String, String> buildHeaders({String? accessToken}) {
+      Map<String, String> headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      };
+      if (accessToken != null) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+      return headers;
+    }
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var id =_prefs.get("id");
 
-    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users/$id'));
-    request.fields['name'] = nom;
-    request.fields['email'] = email;
-    var r=await request.send();
-    var response=await http.Response.fromStream(r);
+    final response = await http.put(Uri.parse('http://$link/api/users/$id'),
+        headers:buildHeaders(),
+        body: jsonEncode(
+    {
+    'name': nom,
+    'email': email
+    },
+    ),
+    );
     final statut = response.statusCode;
     final body = response.body;
     print("statut ${response.statusCode}");
+    print("body ${response.body}");
     if (statut == 200) {
       return userFromJson(body);
     } else {
@@ -326,7 +337,40 @@ class EditUserState extends State<EditUser> {
               MaterialPageRoute(
                   builder: (context) =>MyApp()));
         } else if (snapshot.hasError) {
-          return Text("Eror");
+          return   themejolie(
+            donner: Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: 200,
+                  ),
+                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
+                  ,
+                  SizedBox(
+                    height: 70,
+                  ),
+                  FadeAnimation(
+                    1.6,
+                    Container(
+                      height: 50,
+                      margin: EdgeInsets.symmetric(horizontal: 50),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50),
+                          color: Colors.red[900]),
+                      child: Center(
+                        child:TextButton(
+                          onPressed: () async {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Retour", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
         }
 
         return themejolie(

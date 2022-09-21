@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jery/Admin/AddOneProducts.dart';
+import 'package:jery/Admin/EditProducts.dart';
 import 'package:jery/Crud.dart';
 import 'package:jery/Login.dart';
 import 'package:jery/service.dart';
@@ -68,26 +69,22 @@ class _ProductsAddState extends State<ProductsAdd> {
     return headers;
   }
 
-  // Future Remove(int id_article) async {
-  //   var url = 'https://${link}/api/articles/$id_article';
-  //   
-  //   dio.interceptors.add(PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     compact: false,
-  //   ));
-  //   final response = await dio.delete(url);
-  //   var status=response.statusCode;
-  //   status ==204?
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => ProductsAdd(id: id))):
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => Text("eror")));
-  // }
+  Future Remove(int id_article) async {
+    var url = 'http://${link}/api/products/$id_article';
+
+    final response = await https.delete(Uri.parse(url), headers:buildHeaders());
+    var status=response.statusCode;
+    var body=response.body;
+    print("status $status");
+    print("body $body");
+    status ==200?
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => ProductsAdd(id: id))):
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => Text("eror")));
+  }
 
 
   @override
@@ -196,66 +193,38 @@ class _ProductsAddState extends State<ProductsAdd> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              // PopupMenuButton<Menu>(
-                              //   // Callback that sets the selected popup menu item.
-                              //     onSelected: (Menu item) async {
-                              //       switch (item) {
-                              //         case Menu.itemOne:
-                              //         // TODO: Handle this case.
-                              //           Navigator.push(
-                              //               context,
-                              //               MaterialPageRoute(
-                              //                   builder: (context) => editArticle(
-                              //                     id: id,
-                              //                     id_article: data[index].id,
-                              //                     stock:data[index].stock,
-                              //                     prix:data[index].prix,
-                              //                     description:data[index].description,
-                              //                     nom: data[index].nom,
-                              //
-                              //                   )));
-                              //           break;
-                              //         case Menu.itemTwo:
-                              //         // TODO: Handle this case.
-                              //
-                              //           Remove(data[index].id);
-                              //
-                              //
-                              //           break;
-                              //
-                              //         case Menu.itemThree:
-                              //         // TODO: Handle this case.
-                              //           Navigator.push(
-                              //               context,
-                              //               MaterialPageRoute(
-                              //                   builder: (context) => detailArticle(
-                              //                     id: id,
-                              //                     id_article: data[index].id,
-                              //                     stock:data[index].stock,
-                              //                     prix:data[index].prix,
-                              //                     description:data[index].description,
-                              //                     nom: data[index].nom,
-                              //                     contentUrl: data[index].contentUrl,
-                              //
-                              //                   )));
-                              //           break;
-                              //         case Menu.itemFour:
-                              //         // TODO: Handle this case.
-                              //           Publier(data[index].id);
-                              //           break;
-                              //       }
-                              //     },
-                              //     itemBuilder: (BuildContext context) =>
-                              //     <PopupMenuEntry<Menu>>[
-                              //       Iteme(Menu.itemOne, Icons.edit, Colors.blue,
-                              //           "Modifier"),
-                              //       Iteme(Menu.itemTwo, Icons.highlight_remove,
-                              //           Colors.red, "Suprimer"),
-                              //       Iteme(Menu.itemThree, Icons.remove_red_eye,
-                              //           Colors.green, "Details"),
-                              //       Iteme(Menu.itemFour, Icons.send,
-                              //           Colors.blue.shade900, "Publier"),
-                              //     ]),
+                              PopupMenuButton<Menu>(
+                                // Callback that sets the selected popup menu item.
+                                  onSelected: (Menu item) async {
+                                    switch (item) {
+                                      case Menu.itemOne:
+                                      // TODO: Handle this case.
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => EditProducs(
+                                                  categorie_id: id,
+                                                  id: data[index].id,
+                                                  price:data[index].price,
+                                                  qty: data[index].qty,
+                                                  name: data[index].name,
+
+                                                )));
+                                        break;
+                                      case Menu.itemTwo:
+                                      // TODO: Handle this case.
+                                        Remove(data[index].id);
+
+                                        break;
+                                    }
+                                  },
+                                  itemBuilder: (BuildContext context) =>
+                                  <PopupMenuEntry<Menu>>[
+                                    Iteme(Menu.itemOne, Icons.edit, Colors.blue,
+                                        "Modifier"),
+                                    Iteme(Menu.itemTwo, Icons.highlight_remove,
+                                        Colors.red, "Suprimer"),
+                                  ]),
                             ],
                           ),
                         )),

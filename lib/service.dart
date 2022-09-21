@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
+import 'package:jery/Admin/AddUsers.dart';
 import 'package:jery/Admin/ListesUsers.dart';
 import 'package:jery/Crud.dart';
 import 'package:jery/viewModel/LogibVm.dart';
@@ -58,6 +59,18 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
     if (response.statusCode == 200) {
       final body = response.body;
       return commandesFromJson(body);
+    }
+    else Exception("eureur");
+
+  }
+  Future <User?> getuser(id) async {
+    var url = 'http://$link/api/users/$id';
+
+       final response = await https.get(Uri.parse(url), headers:buildHeaders());
+
+    if (response.statusCode == 200) {
+      final body = response.body;
+      return userFromJson(body);
     }
     else Exception("eureur");
 

@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:jery/main.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +22,7 @@ class LoginVm with ChangeNotifier {
     _prefs.setInt('id', id);
   }
 
-  Future<User> login({
+  Future<Article> login({
     context,
     required String email,
     required String password,
@@ -36,7 +38,9 @@ class LoginVm with ChangeNotifier {
 
     switch (statusType) {
       case 200:
-        final user = userFromJson(response.body);
+        Navigator.push(context, MaterialPageRoute(builder:
+            (context)=>MyApp()));
+        final user = articleFromJson(response.body);
         upDateSharedPreferences(user.token, user.data.id, user.data.role);
         connecter();
 

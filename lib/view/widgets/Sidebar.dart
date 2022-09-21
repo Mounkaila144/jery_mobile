@@ -71,19 +71,6 @@ class _SidebarState extends State<Sidebar> {
                   ),
                   ListTile(
                     leading: Icon(
-                      Icons.account_circle,
-                      color: Colors.blue.shade900,
-                      size: 35,
-                    ),
-                    title: const Text('Modifier mon compte'),
-                    onTap: () {
-                      Provider.of<DrawerScreenProvider>(context, listen: false)
-                          .changeCurrentScreen(CustomScreensEnum.editUser);
-                      Navigator.pop(context);
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
                       Icons.local_convenience_store,
                       color: Colors.blue.shade900,
                       size: 35,
@@ -183,20 +170,6 @@ class _SidebarState extends State<Sidebar> {
                           Provider.of<DrawerScreenProvider>(context,
                                   listen: false)
                               .changeCurrentScreen(CustomScreensEnum.menu);
-                          Navigator.pop(context);
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(
-                          Icons.account_circle,
-                          color: Colors.blue.shade900,
-                          size: 35,
-                        ),
-                        title: const Text('Modifier mon compte'),
-                        onTap: () {
-                          Provider.of<DrawerScreenProvider>(context,
-                                  listen: false)
-                              .changeCurrentScreen(CustomScreensEnum.editUser);
                           Navigator.pop(context);
                         },
                       ),
