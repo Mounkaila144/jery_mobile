@@ -36,7 +36,7 @@ class DrawerScreenProvider extends ChangeNotifier {
         currentScreen =  ListesUsers();
         break;
          case CustomScreensEnum.addUser:
-        currentScreen =  AddUser();
+        currentScreen =  AddRegister();
         break;
          case CustomScreensEnum.listCategorie:
         currentScreen =  CategoriesList();

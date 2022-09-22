@@ -25,6 +25,8 @@ class _SidebarState extends State<Sidebar> {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     await _prefs.remove('token');
     await _prefs.remove('role');
+    await _prefs.remove('name');
+    await _prefs.remove('role');
     await _prefs.remove('id');
   }
 
@@ -66,6 +68,19 @@ class _SidebarState extends State<Sidebar> {
                     onTap: () {
                       Provider.of<DrawerScreenProvider>(context, listen: false)
                           .changeCurrentScreen(CustomScreensEnum.menu);
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(
+                      Icons.account_circle,
+                      color: Colors.blue.shade900,
+                      size: 35,
+                    ),
+                    title: const Text('Modifier mon compte'),
+                    onTap: () {
+                      Provider.of<DrawerScreenProvider>(context, listen: false)
+                          .changeCurrentScreen(CustomScreensEnum.editUser);
                       Navigator.pop(context);
                     },
                   ),
@@ -170,6 +185,20 @@ class _SidebarState extends State<Sidebar> {
                           Provider.of<DrawerScreenProvider>(context,
                                   listen: false)
                               .changeCurrentScreen(CustomScreensEnum.menu);
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.account_circle,
+                          color: Colors.blue.shade900,
+                          size: 35,
+                        ),
+                        title: const Text('Modifier mon compte'),
+                        onTap: () {
+                          Provider.of<DrawerScreenProvider>(context,
+                                  listen: false)
+                              .changeCurrentScreen(CustomScreensEnum.editUser);
                           Navigator.pop(context);
                         },
                       ),

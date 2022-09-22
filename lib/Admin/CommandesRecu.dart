@@ -1,20 +1,15 @@
 import 'dart:convert';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:jery/Crud.dart';
-import 'package:jery/Login.dart';
+
 import 'package:jery/service.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../FadeAnimation.dart';
 import '../global.dart';
+import '../model/getOne.dart';
 import '../theme.dart';
-import 'AddUsers.dart';
 import 'CommandesList.dart';
 
 enum Menu { itemOne, itemTwo, itemThree, itemFour }

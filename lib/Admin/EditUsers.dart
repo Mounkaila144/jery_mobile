@@ -332,10 +332,7 @@ class EditUserState extends State<EditUser> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>MyApp()));
+
         } else if (snapshot.hasError) {
           return   themejolie(
             donner: Center(

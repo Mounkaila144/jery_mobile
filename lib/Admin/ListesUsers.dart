@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jery/Admin/AddUsers.dart';
 import 'package:jery/Crud.dart';
 import 'package:jery/Login.dart';
 import 'package:jery/service.dart';
@@ -112,26 +113,22 @@ class _ListesUsersState extends State<ListesUsers> {
     return headers;
   }
 
-  // Future Remove(int id_article) async {
-  //   var url = 'https://${link}/api/users/$id_article';
-  //   
-  //   dio.interceptors.add(PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     compact: false,
-  //   ));
-  //   final response = await dio.delete(url);
-  //   var status=response.statusCode;
-  //   status ==204?
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => ListesUsers(id: id))):
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => Text("eror")));
-  // }
+  Future Remove(int id_user) async {
+    var url = 'http://${link}/api/users/$id_user';
+
+    final response = await https.delete(Uri.parse(url), headers:buildHeaders());
+    var status=response.statusCode;
+    var body=response.body;
+    print("status $status");
+    print("body $body");
+    status ==200?
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => ListesUsers())):
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => Text("eror")));
+  }
 
 
   @override
@@ -153,7 +150,7 @@ class _ListesUsersState extends State<ListesUsers> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>Login()));
+                        builder: (context) =>AddRegister()));
               },
             ),
           ),
@@ -184,86 +181,97 @@ class _ListesUsersState extends State<ListesUsers> {
                 ResponsiveGridList(
                   horizontalGridMargin: 10,
                   verticalGridMargin: 10,
-                  maxItemsPerRow: 3,
-                  minItemWidth: 160,
+                  maxItemsPerRow: 1,
+                  minItemWidth: 100,
                   shrinkWrap: true,
                   children: List.generate(
                     data.length==null?0:data.length,
                         (index) => InkWell(
                         onTap: () {},
                         child:
-                        Card(
-                          color: Colors.blue.shade200,
-                          elevation: 5.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                SizedBox(
-                                  width: 130,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(
-                                        height: 5.0,
-                                      ),
-                                      RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        text: TextSpan(
-                                            text: 'Nom: ',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey.shade800,
-                                                fontSize: 16.0),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                  '${data[index].name}\n',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold)),
-                                            ]),
-                                      ),
-                                      RichText(
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        text: TextSpan(
-                                            text: 'email: ',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey.shade800,
-                                                fontSize: 16.0),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                  '${data[index].email}\n',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold)),
-                                            ]),
-                                      ),
-                                      RichText(
-                                        maxLines: 1,
-                                        text: TextSpan(
-                                            text: 'cree a : ',
-                                            style: TextStyle(
-                                                color: Colors.blueGrey.shade800,
-                                                fontSize: 16.0),
-                                            children: [
-                                              TextSpan(
-                                                  text:
-                                                  '${data[index].createdAt.toString()}\n',
-                                                  style: const TextStyle(
-                                                      fontWeight:
-                                                      FontWeight.bold)),
-                                            ]),
-                                      ),
-                                    ],
+                        Dismissible(
+                          key: UniqueKey(),
+                          direction: DismissDirection.horizontal,
+                          background:
+                          Container(
+                            color: Colors.red,
+                          ),
+                          onDismissed: (direction) {
+                           Remove(data[index].id);
+                          },
+                          child: Card(
+                            color: Colors.orangeAccent,
+                            elevation: 5.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  SizedBox(
+                                    //width: 130,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          height: 5.0,
+                                        ),
+                                        RichText(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                              text: 'Nom: ',
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey.shade800,
+                                                  fontSize: 16.0),
+                                              children: [
+                                                TextSpan(
+                                                    text:
+                                                    '${data[index].name}\n',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                        FontWeight.bold)),
+                                              ]),
+                                        ),
+                                        RichText(
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                              text: 'email: ',
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey.shade800,
+                                                  fontSize: 16.0),
+                                              children: [
+                                                TextSpan(
+                                                    text:
+                                                    '${data[index].email}\n',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                        FontWeight.bold)),
+                                              ]),
+                                        ),
+                                        RichText(
+                                          maxLines: 1,
+                                          text: TextSpan(
+                                              text: 'cree a : ',
+                                              style: TextStyle(
+                                                  color: Colors.blueGrey.shade800,
+                                                  fontSize: 16.0),
+                                              children: [
+                                                TextSpan(
+                                                    text:
+                                                    '${data[index].createdAt.toString()}\n',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                        FontWeight.bold)),
+                                              ]),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),

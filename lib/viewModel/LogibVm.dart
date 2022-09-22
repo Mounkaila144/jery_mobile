@@ -11,14 +11,27 @@ import '../Login.dart';
 import '../home.dart';
 
 class LoginVm with ChangeNotifier {
-  LoginVm({required this.connect, required this.admin});
+  LoginVm({required this.connect, required this.admin, required this.name, required this.email});
   bool connect;
   bool admin;
+  String name;
+  String email;
+  Future<void> set() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var role = _prefs.get("role");
+    var name = _prefs.get("name");
+    var email = _prefs.get("email");
+    this.name="ghj";
+    this.name="ghfh";
+    notifyListeners();
+  }
 
-  void upDateSharedPreferences(String token, int id, role) async {
+  void upDateSharedPreferences(String token, int id, role,email,name) async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString('token', token);
     _prefs.setString('role', role);
+    _prefs.setString('email', email);
+    _prefs.setString('name', name);
     _prefs.setInt('id', id);
   }
 
@@ -40,8 +53,13 @@ class LoginVm with ChangeNotifier {
       case 200:
         Navigator.push(context, MaterialPageRoute(builder:
             (context)=>MyApp()));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Connexion Reussi'),
+              duration: Duration(seconds: 4),
+            ));
         final user = articleFromJson(response.body);
-        upDateSharedPreferences(user.token, user.data.id, user.data.role);
+        upDateSharedPreferences(user.token, user.data.id, user.data.role,user.data.email,user.data.name,);
         connecter();
 
         return user;
@@ -52,10 +70,15 @@ class LoginVm with ChangeNotifier {
     }
   }
 
+
   Future<void> connecter() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     var role = _prefs.get("role");
+    var name = _prefs.get("name");
+    var email = _prefs.get("email");
     if (_prefs.containsKey("token")) {
+      this.name=name.toString();
+      this.email=email.toString();
       if (role == "admin") {
         this.admin = true;
         this.connect = false;
@@ -69,4 +92,9 @@ class LoginVm with ChangeNotifier {
     }
     notifyListeners();
   }
+   void Email(){
+    this.email;
+    notifyListeners();
+  }
+
 }

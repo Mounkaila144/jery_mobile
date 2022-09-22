@@ -41,18 +41,27 @@ class Data {
   Data({
     required this.id,
     required this.role,
+    required this.name,
+    required this.email,
   });
 
   int id;
   String role;
+  String name;
+  String email;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-    id: json["id"], role: json["role"],
+    id: json["id"],
+    role: json["role"],
+    name: json["name"],
+    email: json["email"],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
     "role": role,
+    "name": name,
+    "email": email,
   };
 }
 class Login extends StatefulWidget {

@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Admin/CommandesList.dart';
 import 'global.dart';
+import 'model/getOne.dart';
 class Remote{
 final link=url;
   static final HttpWithMiddleware https =

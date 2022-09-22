@@ -1,90 +1,26 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:dio/dio.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:jery/Admin/ProductsAdd.dart';
-import 'package:jery/Login.dart';
-import 'package:jery/Login.dart';
-import 'package:jery/Login.dart';
-import 'package:jery/Login.dart';
+import 'package:jery/Admin/ListesUsers.dart';
+import 'package:jery/model/getOne.dart';
 import 'package:loading_animations/loading_animations.dart';
-import 'package:logger/logger.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
 import '../FadeAnimation.dart';
 import '../global.dart';
 import '../theme.dart';
 
-// To parse this JSON data, do
-//
-//     final user = userFromJson(jsonString);
-
-import 'package:meta/meta.dart';
-import 'dart:convert';
-
-User userFromJson(String str) => User.fromJson(json.decode(str));
-
-String userToJson(User data) => json.encode(data.toJson());
-
-class User {
-  User({
-    required this.id,
-    required this.name,
-    required this.role,
-    required this.email,
-    required this.emailVerifiedAt,
-    required this.password,
-    required this.createdAt,
-    required this.updatedAt,
-  });
-
-  int id;
-  String name;
-  String role;
-  String email;
-  dynamic emailVerifiedAt;
-  String password;
-  DateTime createdAt;
-  DateTime updatedAt;
-
-  factory User.fromJson(Map<String, dynamic> json) => User(
-    id: json["id"],
-    name: json["name"],
-    role: json["role"],
-    email: json["email"],
-    emailVerifiedAt: json["email_verified_at"],
-    password: json["password"],
-    createdAt: DateTime.parse(json["created_at"]),
-    updatedAt: DateTime.parse(json["updated_at"]),
-  );
-
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "role": role,
-    "email": email,
-    "email_verified_at": emailVerifiedAt,
-    "password": password,
-    "created_at": createdAt.toIso8601String(),
-    "updated_at": updatedAt.toIso8601String(),
-  };
-}
-
-
-class AddUser extends StatefulWidget {
-  const AddUser({Key? key}) : super(key: key);
+class AddRegister extends StatefulWidget {
+  const AddRegister({Key? key}) : super(key: key);
 
   @override
-  State<AddUser> createState() => AddUserState();
+  State<AddRegister> createState() => AddRegisterState();
 }
 
 
-class AddUserState extends State<AddUser> {
-  Future<User>? categorie;
+class AddRegisterState extends State<AddRegister> {
+  Future<Register>? categorie;
   final link=url;
 
 
@@ -95,23 +31,40 @@ class AddUserState extends State<AddUser> {
 
 
 
-  Future<User> ActionES({
+  Future<Register> ActionES({
     required String nom,
     required String email,
     required String password
   }) async {
-    final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/users'));
-    request.fields['nom'] = nom;
-    request.fields['email'] = email;
-    request.fields['role'] = "role";
-    request.fields['password'] = password;
-    var r=await request.send();
-    var response=await http.Response.fromStream(r);
+    Map<String, String> buildHeaders({String? accessToken}) {
+      Map<String, String> headers = {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      };
+      if (accessToken != null) {
+        headers['Authorization'] = 'Bearer $accessToken';
+      }
+      return headers;
+    }
+
+    final response = await http.post(Uri.parse('http://$link/api/register'),
+      headers:buildHeaders(),
+      body: jsonEncode(
+        {
+          'name': nom,
+          'email': email,
+          'password': password
+        },),);
     final statut = response.statusCode;
     final body = response.body;
     print("statut ${response.statusCode}");
+    print("body ${response.body}");
     if (statut == 200) {
-      return userFromJson(body);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>ListesUsers()));
+      return registerFromJson(body);
     } else {
       throw Exception("eureur");
     }
@@ -155,18 +108,12 @@ class AddUserState extends State<AddUser> {
                   FadeAnimation(
                       1,
                       Text(
-                        "Connecter Vous",
+                        "Ajouter un Register",
                         style: TextStyle(color: Colors.white, fontSize: 40),
                       )),
                   SizedBox(
                     height: 10,
                   ),
-                  FadeAnimation(
-                      1.3,
-                      Text(
-                        "Bienvenu",
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      )),
                 ],
               ),
             ),
@@ -260,7 +207,7 @@ class AddUserState extends State<AddUser> {
                                         ]),
                                         controller: emailController,
                                         decoration: InputDecoration(
-                                            hintText: "aemail",
+                                            hintText: "email",
                                             hintStyle:
                                             TextStyle(color: Colors.grey),
                                             border: InputBorder.none),
@@ -325,7 +272,7 @@ class AddUserState extends State<AddUser> {
                                       }
                                     },
                                     child: Text(
-                                      "Ajouter un categories",
+                                      "Ajouter",
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold),
@@ -348,17 +295,14 @@ class AddUserState extends State<AddUser> {
       ),
     );
   }
-  FutureBuilder<User> buildFutureBuilder() {
-    return FutureBuilder<User>(
+  FutureBuilder<Register> buildFutureBuilder() {
+    return FutureBuilder<Register>(
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>Login()));
+
         } else if (snapshot.hasError) {
-          return Text("Eror");
+          return Text("${snapshot.error}");
         }
 
         return themejolie(

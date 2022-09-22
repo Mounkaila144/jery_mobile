@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ProductsVM(total: 0),
         ),
         ChangeNotifierProvider(
-          create: (context) => LoginVm(admin: true, connect: false),
+          create: (context) => LoginVm(admin: false, connect: false, name: "Vous n'etes pas",email: "Connecter"),
         ),
         ChangeNotifierProvider(
           create: (context) => DrawerScreenProvider(),
