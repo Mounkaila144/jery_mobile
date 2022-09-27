@@ -5,6 +5,7 @@ import 'package:jery/Admin/CommandesRecu.dart';
 import 'package:jery/Admin/EditUsers.dart';
 import 'package:jery/Admin/ListesUsers.dart';
 import 'package:jery/CategorieList.dart';
+import 'package:jery/CommandesEnvoyer.dart';
 import 'package:jery/Login.dart';
 import 'package:jery/Menu.dart';
 import 'package:jery/view/screen/cart.dart';
@@ -47,6 +48,9 @@ class DrawerScreenProvider extends ChangeNotifier {
          case CustomScreensEnum.commandesRecus:
         currentScreen =  CommandeRecus();
         break;
+        case CustomScreensEnum.commandesEnvoyer:
+        currentScreen =  CommandeEnvoyer();
+        break;
       case CustomScreensEnum.login:
         currentScreen = Login();
         break;
@@ -70,6 +74,7 @@ enum CustomScreensEnum {
   listUser,
   panier,
   commandesRecus,
+  commandesEnvoyer,
   deconnexion,
 
 

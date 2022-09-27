@@ -31,7 +31,7 @@ class _CategoriesListState extends State<CategoriesList> {
   }
 
   getData() async {
-    categories =  Remote().getCategories(context);
+    categories =  Remote().getCategories();
 
   }
 
@@ -114,9 +114,9 @@ class _CategoriesListState extends State<CategoriesList> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 200,
+                          height: 100,
                         ),
-                        FadeAnimation(1, Text("Eureur   de chargement ", style: TextStyle(color: Colors.white, fontSize: 60),))
+                        FadeAnimation(1, Text("${snap.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
                         ,
                         SizedBox(
                           height: 70,

@@ -8,13 +8,10 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:responsive_grid_list/responsive_grid_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'Admin/cart_model.dart';
 import 'Crud.dart';
 import 'FadeAnimation.dart';
 import 'Login.dart';
 import 'global.dart';
-import 'home.dart';
 
 class MenuHome extends StatefulWidget {
   const MenuHome({Key? key}) : super(key: key);
@@ -85,7 +82,8 @@ class _MenuHomeState extends State<MenuHome> {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
-                              child:CachedNetworkImage(
+                              child:
+                              CachedNetworkImage(
                                 fit: BoxFit.cover,
                                 placeholder: (context, url) =>
                                     Center(child: LoadingBouncingLine.circle(

@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:pretty_http_logger/pretty_http_logger.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Admin/CartScreen.dart';
 import '../../global.dart';
 import '../../model/productsModel.dart';
+import '../../viewModel/drawer_screen_provider.dart';
 import '../../viewModel/productsVm.dart';
 import '../widgets/Sidebar.dart';
 import '../widgets/cartIteme.dart';
@@ -65,25 +69,39 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final link=url;
 
-
-
+  static Map<String, String> buildHeaders({String? accessToken}) {
+    Map<String, String> headers = {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+    };
+    if (accessToken != null) {
+      headers['Authorization'] = 'Bearer $accessToken';
+    }
+    return headers;
+  }
+  static final HttpWithMiddleware https =
+  HttpWithMiddleware.build(middlewares: [
+    HttpLogger(logLevel: LogLevel.BODY),
+  ]);
   Future<Commandes> ActionES({
     required String contenue,
   }) async {
-
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var id = _prefs.get("id");
     final response = await http.post(Uri.parse('http://$link/api/commandes'),
-      //headers: HelperService.buildHeaders(),
+      headers:buildHeaders(),
       body: jsonEncode(
         {
           "status":true,
           "contenue":contenue,
-          "user_id":1
+          "user_id":id
         },
       ),
     );
-
-
     var statut = response.statusCode;
+    var body = response.body;
+    print(statut);
+    print(body);
     if (statut == 200) {
       return commandesFromJson(response.body);
     } else {
@@ -95,16 +113,8 @@ class _CartScreenState extends State<CartScreen> {
     var screenSize = MediaQuery.of(context).size;
     return Consumer<ProductsVM>(
       builder: (context, value, child) => Scaffold(
-        body: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: const Text(
-              'Panier',
-            ),
-            backgroundColor: Colors.blue.shade900,
-          ),
-          drawer: const Sidebar(),
-          body: Container(
+        body:
+          Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -119,6 +129,27 @@ class _CartScreenState extends State<CartScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  InkWell(
+                    onTap: () async {
+                      ActionES(contenue:productsToJson(value.lst));
+                      value.delAll();
+                      toast("Commandes envoyer",Colors.green);
+                      Provider.of<DrawerScreenProvider>(context, listen: false)
+                          .changeCurrentScreen(CustomScreensEnum.commandesEnvoyer);
+                    },
+                    child: Container(
+                      color: Colors.yellow.shade900,
+                      alignment: Alignment.center,
+                      height: 50.0,
+                      child: const Text(
+                        'Commander',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
                   Column(
                     children: List.generate(
                          value.lst.length,
@@ -156,32 +187,18 @@ class _CartScreenState extends State<CartScreen> {
               ),
             ),
           ),
-        ),
-        bottomNavigationBar: InkWell(
-          onTap: () {
-            ActionES(contenue:productsToJson(value.lst));
-            value.delAll();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Commandes envoyer'),
-                duration: Duration(seconds: 4),
-              ),
-            );
-          },
-          child: Container(
-            color: Colors.yellow.shade900,
-            alignment: Alignment.center,
-            height: 50.0,
-            child: const Text(
-              'Commander',
-              style: TextStyle(
-                fontSize: 18.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-      ),
+      )
     );
+  }
+  Future<bool?> toast(String message,colors) {
+    Fluttertoast.cancel();
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 6,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 25.0);
   }
 }

@@ -40,7 +40,7 @@ class _CategoriesAddState extends State<CategoriesAdd> {
   }
 
   getData() async {
-    categories =  Remote().getCategories(context);
+    categories =  Remote().getCategories();
 
   }
   static Map<String, String> buildHeaders({String? accessToken}) {
@@ -187,19 +187,13 @@ class _CategoriesAddState extends State<CategoriesAdd> {
 
                                                   )));
                                           break;
-                                        case Menu.itemTwo:
-                                        // TODO: Handle this case.
-                                          Remove(data[index].id);
 
-                                          break;
                                       }
                                     },
                                     itemBuilder: (BuildContext context) =>
                                     <PopupMenuEntry<Menu>>[
                                       Iteme(Menu.itemOne, Icons.edit, Colors.blue,
                                           "Modifier"),
-                                      Iteme(Menu.itemTwo, Icons.highlight_remove,
-                                          Colors.red, "Suprimer"),
                                     ]),
                               ],
                             ),

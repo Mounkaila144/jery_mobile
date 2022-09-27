@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -126,6 +127,10 @@ class AddOneProducssState extends State<AddOneProducss> {
               builder: (context) =>ProductsAdd(id: id )));
       return producsFromJson(body);
     } else {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>AddOneProducss(id: id)));
       throw Exception("eureur");
     }
   }
@@ -378,42 +383,14 @@ class AddOneProducssState extends State<AddOneProducss> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
-        } else if (snapshot.hasError) {
-          return  themejolie(
-            donner: Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 200,
-                  ),
-                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
-                  ,
-                  SizedBox(
-                    height: 70,
-                  ),
-                  FadeAnimation(
-                    1.6,
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.red[900]),
-                      child: Center(
-                        child:TextButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Recharger la page", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          toast("Ajouter avec Success", Colors.green);
+        }
+        else if (snapshot.hasError) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>AddOneProducss(id: id)));
+          toast("Eureur lors de l'ajout", Colors.red);
         }
 
         return themejolie(
@@ -436,5 +413,15 @@ class AddOneProducssState extends State<AddOneProducss> {
       },
     );
   }
-
+  Future<bool?> toast(String message,colors) {
+    Fluttertoast.cancel();
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 6,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 25.0);
+  }
 }

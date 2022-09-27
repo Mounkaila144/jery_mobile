@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jery/Admin/CategorieAdd.dart';
 import 'package:jery/Admin/ListesUsers.dart';
 import 'package:jery/viewModel/LogibVm.dart';
+import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../model/getOne.dart';
+import '../../service.dart';
 import '../../viewModel/drawer_screen_provider.dart';
 
 class Sidebar extends StatefulWidget {
@@ -20,6 +24,7 @@ class _SidebarState extends State<Sidebar> {
     Provider.of<LoginVm>(context, listen: false).connecter();
     super.initState();
   }
+  late Future <User?> user;
 
   Deconnexion() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
@@ -28,6 +33,7 @@ class _SidebarState extends State<Sidebar> {
     await _prefs.remove('name');
     await _prefs.remove('role');
     await _prefs.remove('id');
+    toast("Deconnecter", Colors.red);
   }
 
   @override
@@ -41,22 +47,58 @@ class _SidebarState extends State<Sidebar> {
                 // Important: Remove any padding from the ListView.
                 padding: EdgeInsets.zero,
                 children: [
-                  const UserAccountsDrawerHeader(
-                    // <-- SEE HERE
-                    decoration: BoxDecoration(color: const Color(0xff370488)),
-                    accountName: Text(
-                      "Bonjour Admin",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    accountEmail: Text(
-                      "Bienvenue",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    currentAccountPicture: FlutterLogo(),
+                  FutureBuilder <User?>(
+                    future: user=Remote().getCurentUser(),
+                    builder: (context,snap){
+                      if(snap.hasData) {
+                        return
+                          UserAccountsDrawerHeader(
+                            // <-- SEE HERE
+                            decoration: BoxDecoration(color: Colors.orange),
+                            accountName: Text(
+                              "Nom: ${snap.data!.name}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            accountEmail: Text(
+                              "Email: ${snap.data!.email}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            currentAccountPicture: Image.asset("image/logo.png"),
+                          );
+                      }
+                      else if(snap.hasError){
+                        return
+                          UserAccountsDrawerHeader(
+                            // <-- SEE HERE
+                            decoration: BoxDecoration(color: Colors.blue),
+                            accountName: Text(
+                              "Bonjour Admin",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            accountEmail: Text(
+                              "Bienvenue",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            currentAccountPicture: Image.asset("image/logo.png"),
+                          );
+                      }
+                      return
+                        LoadingJumpingLine.circle(
+                          borderColor: Colors.black,
+                          borderSize: 3.0,
+                          size: 150.0,
+                          backgroundColor: Colors.white,
+                          duration: Duration(milliseconds: 500),
+                        );
+                    },
                   ),
                   ListTile(
                     leading: Icon(
@@ -156,23 +198,58 @@ class _SidebarState extends State<Sidebar> {
                     // Important: Remove any padding from the ListView.
                     padding: EdgeInsets.zero,
                     children: [
-                      const UserAccountsDrawerHeader(
-                        // <-- SEE HERE
-                        decoration:
-                            BoxDecoration(color: const Color(0xff370488)),
-                        accountName: Text(
-                          "Bonjours ",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        accountEmail: Text(
-                          "Client",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        currentAccountPicture: FlutterLogo(),
+                      FutureBuilder <User?>(
+                        future: user=Remote().getCurentUser(),
+                        builder: (context,snap){
+                          if(snap.hasData) {
+                            return
+                              UserAccountsDrawerHeader(
+                                // <-- SEE HERE
+                                decoration: BoxDecoration(color: Colors.blue),
+                                accountName: Text(
+                                  "Nom: ${snap.data!.name}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                accountEmail: Text(
+                                  "Email: ${snap.data!.email}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                currentAccountPicture: Image.asset("image/logo.png"),
+                              );
+                          }
+                          else if(snap.hasError){
+                            return
+                              UserAccountsDrawerHeader(
+                                // <-- SEE HERE
+                                decoration: BoxDecoration(color: Colors.green),
+                                accountName: Text(
+                                  "Bonjour Client",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                accountEmail: Text(
+                                  "Bienvenue",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                currentAccountPicture: Image.asset("image/logo.png"),
+                              );
+                          }
+                          return
+                            LoadingJumpingLine.circle(
+                              borderColor: Colors.black,
+                              borderSize: 3.0,
+                              size: 150.0,
+                              backgroundColor: Colors.white,
+                              duration: Duration(milliseconds: 500),
+                            );
+                        },
                       ),
                       ListTile(
                         leading: Icon(
@@ -217,20 +294,20 @@ class _SidebarState extends State<Sidebar> {
                           Navigator.pop(context);
                         },
                       ),
-                      // ListTile(
-                      //   leading: Icon(
-                      //     Icons.store_outlined,
-                      //     color: Colors.blue.shade900,
-                      //     size: 35,
-                      //   ),
-                      //   title: const Text('Commandes envoyer'),
-                      //   onTap: () {
-                      //     Provider.of<DrawerScreenProvider>(context,
-                      //             listen: false)
-                      //         .changeCurrentScreen(CustomScreensEnum.menu);
-                      //Navigator.pop(context);
-                      //   },
-                      // ),
+                      ListTile(
+                        leading: Icon(
+                          Icons.store_outlined,
+                          color: Colors.blue.shade900,
+                          size: 35,
+                        ),
+                        title: const Text('Commandes envoyer'),
+                        onTap: () {
+                          Provider.of<DrawerScreenProvider>(context,
+                                  listen: false)
+                              .changeCurrentScreen(CustomScreensEnum.commandesEnvoyer);
+                      Navigator.pop(context);
+                        },
+                      ),
                       ListTile(
                         leading: Icon(
                           Icons.logout,
@@ -253,7 +330,7 @@ class _SidebarState extends State<Sidebar> {
                     // Important: Remove any padding from the ListView.
                     padding: EdgeInsets.zero,
                     children: [
-                      const UserAccountsDrawerHeader(
+                      UserAccountsDrawerHeader(
                         // <-- SEE HERE
                         decoration:
                             BoxDecoration(color: const Color(0xff370488)),
@@ -269,7 +346,7 @@ class _SidebarState extends State<Sidebar> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        currentAccountPicture: FlutterLogo(),
+                        currentAccountPicture: Image.asset("image/logo.png"),
                       ),
                       ListTile(
                         leading: Icon(
@@ -320,5 +397,16 @@ class _SidebarState extends State<Sidebar> {
                   )),
       ),
     );
+  }
+  Future<bool?> toast(String message,colors) {
+    Fluttertoast.cancel();
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 6,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 25.0);
   }
 }

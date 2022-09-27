@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jery/main.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:http/http.dart' as http;
 import '../../model/productsModel.dart';
 import '../Login.dart';
 import '../home.dart';
+import 'drawer_screen_provider.dart';
 
 class LoginVm with ChangeNotifier {
   LoginVm({required this.connect, required this.admin, required this.name, required this.email});
@@ -51,13 +53,9 @@ class LoginVm with ChangeNotifier {
 
     switch (statusType) {
       case 200:
-        Navigator.push(context, MaterialPageRoute(builder:
-            (context)=>MyApp()));
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Connexion Reussi'),
-              duration: Duration(seconds: 4),
-            ));
+        Provider.of<DrawerScreenProvider>(context, listen: false)
+            .changeCurrentScreen(CustomScreensEnum.menu);
+        toast("Connexion Reussi avec success", Colors.green);
         final user = articleFromJson(response.body);
         upDateSharedPreferences(user.token, user.data.id, user.data.role,user.data.email,user.data.name,);
         connecter();
@@ -96,5 +94,15 @@ class LoginVm with ChangeNotifier {
     this.email;
     notifyListeners();
   }
-
+  Future<bool?> toast(String message,colors) {
+    Fluttertoast.cancel();
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 6,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 25.0);
+  }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:jery/main.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:logger/logger.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../FadeAnimation.dart';
@@ -23,6 +25,8 @@ import '../theme.dart';
 
 import 'package:meta/meta.dart';
 import 'dart:convert';
+
+import '../viewModel/drawer_screen_provider.dart';
 
 User userFromJson(String str) => User.fromJson(json.decode(str));
 
@@ -122,6 +126,8 @@ class EditUserState extends State<EditUser> {
     print("statut ${response.statusCode}");
     print("body ${response.body}");
     if (statut == 200) {
+      Provider.of<DrawerScreenProvider>(context, listen: false)
+          .changeCurrentScreen(CustomScreensEnum.menu);
       return userFromJson(body);
     } else {
       throw Exception("eureur");
@@ -332,42 +338,11 @@ class EditUserState extends State<EditUser> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          toast("Votre Compte a été Modifier avec Sucesss", Colors.green);
+
 
         } else if (snapshot.hasError) {
-          return   themejolie(
-            donner: Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 200,
-                  ),
-                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
-                  ,
-                  SizedBox(
-                    height: 70,
-                  ),
-                  FadeAnimation(
-                    1.6,
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.red[900]),
-                      child: Center(
-                        child:TextButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Retour", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          toast("Eureur de Modification ", Colors.red);
         }
 
         return themejolie(
@@ -390,5 +365,15 @@ class EditUserState extends State<EditUser> {
       },
     );
   }
-
+  Future<bool?> toast(String message,colors) {
+    Fluttertoast.cancel();
+    return Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 6,
+        backgroundColor: colors,
+        textColor: Colors.white,
+        fontSize: 25.0);
+  }
 }

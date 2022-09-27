@@ -40,7 +40,7 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
   else Exception("eureur");
 }
 
-  Future<List<Categories>?> getCategories(context) async {
+  Future<List<Categories>?> getCategories() async {
     var url = 'http://$link/api/categories';
     
        final response = await https.get(Uri.parse(url), headers:buildHeaders());
@@ -64,6 +64,20 @@ Future<List<Products>?> getProductsByCategorie(idCategorie) async {
     else Exception("eureur");
 
   }
+Future<List<Commandes>?> getCommandesByUser() async {
+  SharedPreferences _prefs = await SharedPreferences.getInstance();
+  var id = _prefs.get("id");
+  var url = 'http://$link/api/commandes?user_id=$id';
+
+  final response = await https.get(Uri.parse(url), headers:buildHeaders());
+
+  if (response.statusCode == 200) {
+    final body = response.body;
+    return commandesFromJson(body);
+  }
+  else Exception("eureur");
+
+}
   Future <User?> getuser(id) async {
     var url = 'http://$link/api/users/$id';
 
@@ -98,4 +112,19 @@ static Map<String, String> buildHeaders({String? accessToken}) {
   }
   return headers;
 }
+
+  Future<User?> getCurentUser() async {
+    SharedPreferences _prefs = await SharedPreferences.getInstance();
+    var id = _prefs.get("id");
+    var url = 'http://$link/api/users/$id';
+
+  final response = await https.get(Uri.parse(url), headers:buildHeaders());
+
+  if (response.statusCode == 200) {
+    final body = response.body;
+    return userFromJson(body);
+  }
+  else Exception("eureur");
+
+  }
 }

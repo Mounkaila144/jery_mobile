@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:pretty_http_logger/pretty_http_logger.dart';
 import '../FadeAnimation.dart';
 import '../global.dart';
 import '../theme.dart';
+import 'Dropdown.dart';
 
 
 
@@ -75,6 +78,11 @@ class AddOneCategoriesState extends State<AddOneCategories> {
     HttpLogger(logLevel: LogLevel.BODY),
   ]);
 
+   final List<String> items = [
+     "Oui","Non"
+   ];
+   String selectedValue="Oui";
+
 
    @override
   void initState() {
@@ -96,7 +104,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
 
      final request = await http.MultipartRequest("POST", Uri.parse('http://$link/api/categories'));
      request.fields['name'] = nom;
-     request.fields['active'] = active;
+     request.fields['is_active'] = active;
      request.files.add(await http.MultipartFile.fromPath("file", image.path));
      var r=await request.send();
      var response=await http.Response.fromStream(r);
@@ -112,6 +120,10 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                builder: (context) =>CategoriesAdd()));
        return categorieFromJson(body);
      } else {
+       Navigator.push(
+           context,
+           MaterialPageRoute(
+               builder: (context) =>AddOneCategories()));
        throw Exception("eureur");
      }
    }
@@ -120,7 +132,6 @@ class AddOneCategoriesState extends State<AddOneCategories> {
   late final XFile? image;
   final _formKey = GlobalKey<FormState>();
   final nomController = TextEditingController();
-  final activeController = TextEditingController();
   bool valide = false;
 
   @override
@@ -181,7 +192,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                               ? FadeAnimation(
                               1000,
                               Text(
-                                "Votre mots de passe ou votre adress email est invalide",
+                                "Valeur nvalide",
                                 style: TextStyle(
                                     color: Colors.red.shade900,
                                     fontSize: 25),
@@ -236,30 +247,44 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                                             border: InputBorder.none),
                                       ),
                                     ),
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          border: Border(
-                                              bottom: BorderSide(
-                                                  color:
-                                                  Colors.grey.shade200))),
-                                      child: TextFormField(
-                                        validator:
-                                        FormBuilderValidators.compose([
-                                          FormBuilderValidators.minLength(3,
-                                              errorText:
-                                              "La valeur est inferieur à 3"),
-                                          FormBuilderValidators.required(
-                                              errorText: "Valeur vide"),
-                                        ]),
-                                        controller: activeController,
-                                        decoration: InputDecoration(
-                                            hintText: "Active yes or no",
-                                            hintStyle:
-                                            TextStyle(color: Colors.grey),
-                                            border: InputBorder.none),
-                                      ),
+
+
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton2(
+                                  hint: Text(
+                                    'Oui ou nom',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme
+                                          .of(context)
+                                          .hintColor,
                                     ),
+                                  ),
+                                  items: items
+                                      .map((item) =>
+                                      DropdownMenuItem<String>(
+                                        value: item,
+                                        child: Text(
+                                          item,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ))
+                                      .toList(),
+                                  value: selectedValue,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      selectedValue = value as String;
+                                    });
+                                  },
+                                  buttonHeight: 40,
+                                  buttonWidth: 140,
+                                  itemHeight: 40,
+                                ),
+                              ),
+
+
                                     Container(
                                       padding: EdgeInsets.all(10),
                                       decoration: BoxDecoration(
@@ -300,7 +325,7 @@ class AddOneCategoriesState extends State<AddOneCategories> {
                                          categorie = ActionES(
                                              photo: image,
                                              nom: nomController.text,
-                                             active: activeController.text);
+                                             active: selectedValue);
                                        });
                                       } else {
                                         setState(() {
@@ -337,42 +362,14 @@ class AddOneCategoriesState extends State<AddOneCategories> {
       future: categorie,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-
-        } else if (snapshot.hasError) {
-          themejolie(
-            donner: Center(
-              child: Column(
-                children: [
-                  SizedBox(
-                    height: 200,
-                  ),
-                  FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
-                  ,
-                  SizedBox(
-                    height: 70,
-                  ),
-                  FadeAnimation(
-                    1.6,
-                    Container(
-                      height: 50,
-                      margin: EdgeInsets.symmetric(horizontal: 50),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(50),
-                          color: Colors.red[900]),
-                      child: Center(
-                        child:TextButton(
-                          onPressed: () async {
-                            Navigator.pop(context);
-                          },
-                          child: Text("Recharger la page", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
+          toast("Ajouter avec Success", Colors.green);
+        }
+        else if (snapshot.hasError) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>AddOneCategories()));
+          toast("Eureur lors de l'ajout", Colors.red);
         }
 
         return themejolie(
@@ -395,5 +392,15 @@ class AddOneCategoriesState extends State<AddOneCategories> {
       },
     );
   }
-
+   Future<bool?> toast(String message,colors) {
+     Fluttertoast.cancel();
+     return Fluttertoast.showToast(
+         msg: message,
+         toastLength: Toast.LENGTH_LONG,
+         gravity: ToastGravity.BOTTOM,
+         timeInSecForIosWeb: 6,
+         backgroundColor: colors,
+         textColor: Colors.white,
+         fontSize: 25.0);
+   }
 }

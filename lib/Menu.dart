@@ -51,8 +51,8 @@ class _MenuState extends State<Menu> {
       child: !value.admin ?
       InkWell(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CartScreen()));
+          Provider.of<DrawerScreenProvider>(context, listen: false)
+              .changeCurrentScreen(CustomScreensEnum.panier);
         },
         child: Padding(
           padding:

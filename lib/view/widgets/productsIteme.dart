@@ -41,12 +41,12 @@ class ProductItem extends StatelessWidget {
               fit: BoxFit.cover,
               placeholder: (context, url) =>
                   Center(child: CircularProgressIndicator()),
-              imageUrl: "http://192.168.43.219:8000/$image" ?? 'https://picsum.photos/250?image=9',
+              imageUrl: "http://192.168.43.219:8000/$image",
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(4.0),
-            child: Text(itemName ?? "Item"),
+            child: Text(itemName),
           ),
           Consumer<ProductsVM>(
             builder: (context, value, child) => InkWell(
