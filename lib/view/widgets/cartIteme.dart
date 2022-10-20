@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:jery/global.dart';
 
 class CartItem extends StatelessWidget {
   const CartItem(
@@ -29,7 +30,7 @@ class CartItem extends StatelessWidget {
                 fit: BoxFit.cover,
                 placeholder: (context, url) =>
                     Center(child: CircularProgressIndicator()),
-                imageUrl: "http://192.168.43.219:8000/$image" ?? 'https://picsum.photos/250?image=9',
+                 imageUrl: "http://$url/$image",
               ),
               SizedBox(
                 width: 130,

@@ -7,6 +7,7 @@ import 'package:jery/viewModel/LogibVm.dart';
 import 'package:loading_animations/loading_animations.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../Admin/CommandesRecu.dart';
 import '../../model/getOne.dart';
 import '../../service.dart';
 import '../../viewModel/drawer_screen_provider.dart';
@@ -146,9 +147,10 @@ class _SidebarState extends State<Sidebar> {
                     ),
                     title: const Text('Commandes Recus'),
                     onTap: () {
-                      Provider.of<DrawerScreenProvider>(context, listen: false)
-                          .changeCurrentScreen(CustomScreensEnum.commandesRecus);
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CommandeRecus()));
                     },
                   ),
                    ListTile(

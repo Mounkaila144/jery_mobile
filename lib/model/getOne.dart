@@ -73,3 +73,33 @@ class User {
     "updated_at": updatedAt.toIso8601String(),
   };
 }
+
+// To parse this JSON data, do
+//
+//     final commande = commandeFromJson(jsonString);
+
+Commande commandeFromJson(String str) => Commande.fromJson(json.decode(str));
+
+String commandeToJson(Commande data) => json.encode(data.toJson());
+
+class Commande {
+  Commande({
+    required this.id,
+  });
+
+  int id;
+
+
+  factory Commande.fromJson(Map<String, dynamic> json) => Commande(
+    id: json["id"],
+
+  );
+
+  Map<String, dynamic> toJson() => {
+    "id": id,
+
+  };
+}
+
+
+

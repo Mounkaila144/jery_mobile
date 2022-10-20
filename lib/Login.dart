@@ -104,9 +104,6 @@ class LoginState extends State<Login> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            SizedBox(
-              height: 80,
-            ),
             Padding(
               padding: EdgeInsets.all(20),
               child:
@@ -119,17 +116,9 @@ class LoginState extends State<Login> {
                         "Connecter Vous",
                         style: TextStyle(color: Colors.white, fontSize: 40),
                       )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  FadeAnimation(
-                      1.3,
-                      Text("Bonjour")
-                  ),
                 ],
               ),
             ),
-            SizedBox(height: 20),
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -303,7 +292,7 @@ class LoginState extends State<Login> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 200,
+                    height: 100,
                   ),
                   FadeAnimation(1, Text("${snapshot.error}", style: TextStyle(color: Colors.white, fontSize: 30),))
                   ,

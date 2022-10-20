@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jery/Admin/CommandesContent.dart';
 
 import 'package:jery/service.dart';
 import 'package:loading_animations/loading_animations.dart';
@@ -12,7 +13,7 @@ import '../model/getOne.dart';
 import '../theme.dart';
 import 'CommandesList.dart';
 
-enum Menu { itemOne, itemTwo, itemThree, itemFour }
+enum Menu { itemZero, itemOne}
 
 class CommandeRecus extends StatefulWidget {
 
@@ -30,7 +31,6 @@ class _CommandeRecusState extends State<CommandeRecus> {
   ]);
   String _selectedMenu = '';
   late Future <List<Commandes>?> articles;
-  late Future <User?> user;
   var isLoaded = false;
 
   @override
@@ -59,31 +59,32 @@ class _CommandeRecusState extends State<CommandeRecus> {
     return headers;
   }
 
-  // Future Remove(int id_article) async {
-  //   var url = 'https://${link}/api/articles/$id_article';
-  //   
-  //   dio.interceptors.add(PrettyDioLogger(
-  //     requestHeader: true,
-  //     requestBody: true,
-  //     responseBody: true,
-  //     responseHeader: false,
-  //     compact: false,
-  //   ));
-  //   final response = await dio.delete(url);
-  //   var status=response.statusCode;
-  //   status ==204?
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => CommandeRecus(id: id))):
-  //   Navigator.push(context,
-  //       MaterialPageRoute(
-  //           builder: (context) => Text("eror")));
-  // }
+  Future SetStatus(int id_commande,int status) async {
+    var url = 'http://$link/api/commandes/$id_commande';
+
+    final response = await https.put(Uri.parse(url),
+      headers:buildHeaders(),
+      body: jsonEncode(
+        {
+          'status': status
+        },),);
+    final statut = response.statusCode;
+    final body = response.body;
+    status ==204?
+    Navigator.push(context,
+        MaterialPageRoute(
+            builder: (context) => CommandeRecus())):
+   null;
+  }
 
 
   @override
   Widget build(BuildContext context) {
-    return
+    return Scaffold(
+        appBar: AppBar(
+        title: Text("Contenue de la commandes"),
+    ),
+    body:
       Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -111,13 +112,15 @@ class _CommandeRecusState extends State<CommandeRecus> {
                   children: List.generate(
                     data.length==null?0:data.length,
                         (index) => InkWell(
-                        onTap: () {},
+                        onTap: () {
+                           Navigator.push(context, MaterialPageRoute(builder:
+                               (context)=>CommandeContent(id:data[index].id )));
+                        },
                         child:
                         Card(
                           color: Colors.blue.shade200,
                           elevation: 5.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(4.0),
+                          child: Padding(padding: const EdgeInsets.all(1.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               //mainAxisSize: MainAxisSize.max,
@@ -131,47 +134,25 @@ class _CommandeRecusState extends State<CommandeRecus> {
                                         height: 5.0,
                                       ),
 
-                                      FutureBuilder <User?>(
-                                        future: user=Remote().getuser(data[index].userId),
-                                        builder: (context,snap){
-                                          if(snap.hasData) {
-                                            return
-                                              RichText(
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                                text: TextSpan(
-                                                    text: 'Envoyer par user n°:${snap
-                                                        .data!.name}',
-                                                    style: TextStyle(
-                                                        color: Colors.blueGrey
-                                                            .shade800,
-                                                        fontSize: 16.0),
-                                                    children: [
-                                                      TextSpan(
-                                                          text:
-                                                          '${data[index]
-                                                              .userId}\n',
-                                                          style: const TextStyle(
-                                                              fontWeight:
-                                                              FontWeight.bold)),
-                                                    ]),
-                                              );
-                                          }
-                                          else if(snap.hasError){
-                                            return
-                                              Text("Eureur de chargement");
-                                          }
-                                          return
-                                            LoadingJumpingLine.circle(
-                                              borderColor: Colors.black,
-                                              borderSize: 3.0,
-                                              size: 100.0,
-                                              backgroundColor: Colors.white,
-                                              duration: Duration(milliseconds: 500),
-                                            );
-                                        },
-                                      ),
-
+                                      RichText(
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                    text: TextSpan(
+                                        text: 'Envoyer par:',
+                                        style: TextStyle(
+                                            color: Colors.blueGrey
+                                                .shade800,
+                                            fontSize: 16.0),
+                                        children: [
+                                          TextSpan(
+                                              text:
+                                              '${data[index]
+                                                  .userId}\n',
+                                              style: const TextStyle(
+                                                  fontWeight:
+                                                  FontWeight.bold)),
+                                        ]),
+                                  ),
                                       RichText(
                                         maxLines: 1,
                                         text: TextSpan(
@@ -188,6 +169,77 @@ class _CommandeRecusState extends State<CommandeRecus> {
                                                       FontWeight.bold)),
                                             ]),
                                       ),
+                                       RichText(
+                                        maxLines: 1,
+                                        text: TextSpan(
+                                            text: 'Quantiter total: ',
+                                            style: TextStyle(
+                                                color: Colors.blueGrey.shade800,
+                                                fontSize: 16.0),
+                                            children: [
+                                              TextSpan(
+                                                  text:
+                                                  '${data[index].contenue}\n',
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold)),
+                                            ]),
+                                      ),
+
+                                      RichText(
+                                        maxLines: 1,
+                                        text: TextSpan(
+                                            text: 'Status: ',
+                                            style: TextStyle(
+                                                color: Colors.blueGrey.shade800,
+                                                fontSize: 16.0),
+                                            children: [
+                                              data[index].status==0?
+                                              TextSpan(
+                                                  text:
+                                                  'En Attent\n',
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                      FontWeight.bold,
+                                                      color: Colors.red)):
+                                              TextSpan(
+                                                  text:
+                                                  'Effectuer\n',
+                                                  style: const TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                       color: Colors.green
+                                                  )),
+                                            ]),
+                                      ),
+                                      PopupMenuButton<Menu>(
+                                        // Callback that sets the selected popup menu item.
+                                          onSelected: (Menu item) async {
+                                            switch (item) {
+                                              case Menu.itemZero:
+                                              // TODO: Handle this case.
+                                                SetStatus(data[index].id,0);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => CommandeRecus()));
+                                                break;
+                                              case Menu.itemOne:
+                                              // TODO: Handle this case.
+                                                SetStatus(data[index].id,1);
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) => CommandeRecus()));
+                                                break;
+                                            }
+                                          },
+                                          itemBuilder: (BuildContext context) =>
+                                          <PopupMenuEntry<Menu>>[
+                                            Iteme(Menu.itemZero, Icons.remove_done, Colors.red,
+                                                "Mise en Attent"),
+                                            Iteme(Menu.itemOne, Icons.done_all,
+                                                Colors.green, "Effectuer"),
+                                          ]),
                                     ],
                                   ),
                                 ),
@@ -255,11 +307,10 @@ class _CommandeRecusState extends State<CommandeRecus> {
           }
 
         ),
-      );
+      ),
+    );
   }
 }
-
-
 
 PopupMenuItem<Menu> Iteme(vauleIteme, IconData icon, Color color, String text) {
   return PopupMenuItem<Menu>(

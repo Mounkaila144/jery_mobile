@@ -21,17 +21,17 @@ class Commandes {
   int id;
   int status;
   String contenue;
-  int userId;
-  dynamic createdAt;
-  dynamic updatedAt;
+  String userId;
+  DateTime createdAt;
+  DateTime updatedAt;
 
   factory Commandes.fromJson(Map<String, dynamic> json) => Commandes(
     id: json["id"],
     status: json["status"],
     contenue: json["contenue"],
     userId: json["user_id"],
-    createdAt: json["created_at"],
-    updatedAt: json["updated_at"],
+    createdAt: DateTime.parse(json["created_at"]),
+    updatedAt: DateTime.parse(json["updated_at"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -39,7 +39,8 @@ class Commandes {
     "status": status,
     "contenue": contenue,
     "user_id": userId,
-    "created_at": createdAt,
-    "updated_at": updatedAt,
+    "created_at": createdAt.toIso8601String(),
+    "updated_at": updatedAt.toIso8601String(),
   };
 }
+

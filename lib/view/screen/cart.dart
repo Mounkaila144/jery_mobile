@@ -131,7 +131,7 @@ class _CartScreenState extends State<CartScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      ActionES(contenue:productsToJson(value.lst));
+                      ActionES(contenue:jsonEncode(value.panier));
                       value.delAll();
                       toast("Commandes envoyer",Colors.green);
                       Provider.of<DrawerScreenProvider>(context, listen: false)
@@ -165,7 +165,8 @@ class _CartScreenState extends State<CartScreen> {
                             onDismissed: (direction) {
                               value.del(index);
                             },
-                            child: CartItem(
+                            child:
+                            CartItem(
                               screenSize: screenSize,
                               image: value.lst[index].image,
                               itemName: value.lst[index].name,
